@@ -156,7 +156,7 @@ ul.CTAs a {
 
 a.lgout {
   background: #fff;
-  color: black !important; 
+  color: black !important;
 }
 
 
@@ -164,6 +164,7 @@ a.lgout {
 {
   padding:0px;
   margin:0;
+  color:red;
 }
 /* ---------------------------------------------------
   CONTENT STYLE
@@ -236,7 +237,7 @@ background-image:url('../images/header_footer.jpg');
 	opacity:.80;
 	filter: alpha(opacity=80);
 }
- 
+
 /* .white_content { */
   #light
   {
@@ -392,7 +393,7 @@ background-image: url('../images/send.jpg');
 
 #adshirttbl td
 {
-  text-align:left; 
+  text-align:left;
   vertical-align:middle;
   /* border:1px solid black; */
 }
@@ -512,7 +513,7 @@ body
   {
     overflow-y: visible;
   }
-} 
+}
 
 .blue
 {
