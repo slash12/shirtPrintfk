@@ -12,7 +12,7 @@
             </ul>
         </li>
         <li>
-            <a href="#">Manage Brand</a>
+            <a href="tshirt_addAttributes.php">Manage T-Shirt Attributes</a>
         </li>
         <li>
             <a href="#">About</a>
