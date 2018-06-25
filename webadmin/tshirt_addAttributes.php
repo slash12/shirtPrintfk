@@ -2,33 +2,177 @@
 require('../includes/dbconnect.php'); 
 //FUNCTIONS
 //make of datatables
-function makeDatatbl($col_id, $col,$tblname, $dbc)
-{
-    $sql = "SELECT $col_id, $col FROM $tblname;";
-    $qry = mysqli_query($dbc, $sql);
-
-    while($row = mysqli_fetch_array($qry))
+    function makeDatatbl($col_id, $col,$tblname, $dbc)
     {
-        echo "<tr><td>".$row["$col"]."</td>";
-        echo "<td><a class='btn btn-primary' href='tshirt_addAttributes.php?".$tblname."-update=".$row["$col_id"]."'>Update</a> | <a class='btn btn-warning' href='tdatatbl.php?".$tblname."-delete=".$row["$col_id"]."' onclick='return confirm('Are You Sure?');'>Delete</a></td></tr>";
+        $sql = "SELECT $col_id, $col FROM $tblname;";
+        $qry = mysqli_query($dbc, $sql);
+
+        while($row = mysqli_fetch_array($qry))
+        {
+            echo "<tr><td>".$row["$col"]."</td>";
+            echo "<td><a class='btn btn-primary' href='tshirt_addAttributes.php?".$tblname."-update=".$row["$col_id"]."'>Update</a> | <a class='btn btn-warning' href='tshirt_addAttributes.php?".$tblname."-delete=".$row["$col_id"]."'>Delete</a></td></tr>";
+        }
+        mysqli_free_result($qry);
     }
-    mysqli_free_result($qry);
-}
+//make of datatables
 
 //to display selected field in the textbox
-function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colname, $tblname, $colid, $dbc, $flname)
-{
-    echo "<script>document.getElementById('".$frmname."').action='tshirt_addAttributes.php?".$qry_str_param."=".$qry_id."'</script>";
-    echo "<script>document.getElementById('".$btnname."').value='Update'</script>";
-    echo "<script>document.getElementById('".$hfname."').value = '".$qry_id."'</script>";
-    $sql_dis = "SELECT $colname from $tblname where $colid='$qry_id'";
-    $qry_dis = mysqli_query($dbc, $sql_dis);
-    if($qry_dis)
+    function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colname, $tblname, $colid, $dbc, $flname)
     {
-        $result = mysqli_fetch_assoc($qry_dis);
-       echo "<script>document.getElementById('".$flname."').value='".$result["$colname"]."'</script>";
+        echo "<script>document.getElementById('".$frmname."').action='tshirt_addAttributes.php?".$qry_str_param."=".$qry_id."'</script>";
+        echo "<script>document.getElementById('".$btnname."').value='Update'</script>";
+        echo "<script>document.getElementById('".$hfname."').value = '".$qry_id."'</script>";
+        $sql_dis = "SELECT $colname from $tblname where $colid='$qry_id'";
+        $qry_dis = mysqli_query($dbc, $sql_dis);
+        if($qry_dis)
+        {
+            $result = mysqli_fetch_assoc($qry_dis);
+        echo "<script>document.getElementById('".$flname."').value='".$result["$colname"]."'</script>";
+        }
     }
-}
+//to display selected field in the textbox
+
+//update and insert of tshirt attributes
+    function upadd($dbc, $txtfield, $msgheader, $rqbrand, $hffield, $colname, $tblname, $col_id, $upattr, $inattr, $uniqattr)
+    {
+        $attribute = mysqli_real_escape_string($dbc , trim($_POST[$txtfield]));  
+        if(empty($attribute))
+        {
+            echo "<script>   $.confirm({
+                title: '".$msgheader."',
+                content: '".$rqbrand."',
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    TryAgain:{
+                        text: 'Try again',
+                        btnClass: 'btn-orange',
+                    },
+                }
+            });</script>";
+        }
+        else
+        {
+            if($_GET)
+            {
+                $attr_id = $_POST[$hffield];
+                $sql_up = "UPDATE ".$tblname." SET ".$colname."='$attribute' WHERE ".$col_id."='$attr_id'";
+                $qry_up = mysqli_query($dbc, $sql_up);
+                if($qry_up)
+                {
+                    echo "<script>   $.confirm({
+                        title: '".$msgheader."',
+                        content: '".$upattr."',
+                        type: 'green',
+                        typeAnimated: true,
+                        buttons: {
+                            OK: function () {
+                                window.location='tshirt_addAttributes.php'
+                            },
+                        }
+                    });</script>";
+                }
+            }
+            else
+            {
+                $sql_check = "SELECT ".$colname." FROM ".$tblname." WHERE ".$colname."='$attribute'";
+                $sql_qry = mysqli_query($dbc, $sql_check);
+
+                if(mysqli_num_rows($sql_qry) == 0)
+                {
+                    $sql_add = "INSERT INTO ".$tblname."(".$colname.") VALUES ('$attribute')";
+                    $qry_add = mysqli_query($dbc, $sql_add);
+                    if($qry_add)
+                    {
+                        echo "<script>$.confirm({
+                            title: 'Notice',
+                            content: '".$inattr."',
+                            type: 'green',
+                            typeAnimated: true,
+                            buttons: {
+                                OK: function () {
+                                    window.location='tshirt_addAttributes.php'
+                                },
+                            }
+                        });</script>";
+                    }
+                    else
+                    {
+                        echo "<script>$.confirm({
+                            title: 'Error',
+                            content: 'Database Error',
+                            type: 'orange',
+                            typeAnimated: true,
+                            buttons: {
+                                TryAgain:{
+                                    text: 'Try again',
+                                    btnClass: 'btn-orange',
+                                },
+                            }
+                        });</script>";
+                    }
+                }
+                else
+                {
+                    echo "<script>$.confirm({
+                            title: 'Notice',
+                            content: '".$uniqattr."',
+                            type: 'orange',
+                            typeAnimated: true,
+                            buttons: {
+                                TryAgain:{
+                                    text: 'Try again',
+                                    btnClass: 'btn-orange',
+                                },
+                            }
+                        });</script>";
+                }
+                
+            }
+        }
+    }
+//update and insert of tshirt attributes
+
+//delete tshirt attributes
+    function deltshirt($tblname, $col_id, $qry_id, $dbc, $delmsg)
+    {
+        $sql_delete = "DELETE FROM ".$tblname." WHERE ".$col_id." =".$qry_id;
+        $qry_delete = mysqli_query($dbc, $sql_delete);
+        if($qry_delete)
+        {
+            echo "<script>$.confirm({
+                title: 'Notice',
+                content: '".$delmsg."',
+                type: 'red',
+                typeAnimated: true,
+                buttons: {
+                    close: function () {
+                        window.location='tshirt_addAttributes.php'
+                    }
+                }
+            });</script>";
+        }
+        else
+        {
+            echo "<script>$.confirm({
+                title: 'Error',
+                content: 'Database Error',
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    TryAgain:{
+                        text: 'Try again',
+                        btnClass: 'btn-orange',
+                        action: funtion ()
+                        {
+                            window.location='tshirt_addAttributes.php'
+                        }
+                    },
+                }
+            });</script>";
+        }
+    }
+//delete t-shirt attributes
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,23 +187,18 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
     <link rel="stylesheet" href="../css/bootstrap337.min.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap337.min.css">
     <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="../css/jquery-confirm.min.css">
 
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="../js/jquery.dataTables.min.js"></script>
     <script src="../js/dataTables.bootstrap337.min.js"></script>
     <script src="../js/bootstrap337.min.js"></script>
+    <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/popper.js"></script>
 <!--/Imports-->
 
-<!--styles temp-->
-<style>
-        td
-        {
-            border:1px solid black;
-        }
-</style>
-<!--/styles temp-->
+
 </head>
 
 <!-- PHP Validations -->
@@ -67,52 +206,44 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
 //Brand Validation
     if(@$_POST["btnsubbrand"])
     {
-        $brand = mysqli_real_escape_string($dbc , trim($_POST["txtbrand"]));  
-        if(empty($brand))
-        {
-            $brand_alert = "<div class='alert alert-danger alert-dismissible'>Enter a Brand <a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>";
-        }
-        else
-        {
-            if($_GET)
-            {
-                $brand_id = $_POST["hfbrand"];
-                $sql_up = "UPDATE tbl_brand SET brand='$brand' WHERE brand_id='$brand_id'";
-                $qry_up = mysqli_query($dbc, $sql_up);
-                if($qry_up)
-                {
-                $brand_alert = "<div class='alert alert-success alert-dismissible'>Brand Updated<a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>";
-                header('refresh:2; url=tshirt_addAttributes.php');
-                }
-            }
-            else
-            {
-                $sql_check = "SELECT brand FROM tbl_brand WHERE brand='$brand'";
-                $sql_qry = mysqli_query($dbc, $sql_check);
-
-                if(mysqli_num_rows($sql_qry) == 0)
-                {
-                    $sql_add = "INSERT INTO `tbl_brand`(`brand`) VALUES ('$brand')";
-                    $qry_add = mysqli_query($dbc, $sql_add);
-                    if($qry_add)
-                    {
-                        $brand_alert = "<div class='alert alert-success alert-dismissible'>Brand Added<a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>";
-                        header('refresh:2; url=tshirt_addAttributes.php');
-                    }
-                    else
-                    {
-                        $brand_alert = "<div class='alert alert-warning alert-dismissible'>Database Error, Please try again<a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>";
-                    }
-                }
-                else
-                {
-                    $brand_alert = "<div class='alert alert-warning alert-dismissible'>Brand Already Exists<a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>";
-                    header('refresh:2; url=tdatatbl.php');
-                }
-            }
-        }
+        upadd($dbc, "txtbrand", "Notice", "Brand is required", "hfbrand", "brand", "tbl_brand", "brand_id", "Brand Updated", "Brand Inserted", "Brand Already Exists");
     }
 //Brand Validation
+
+//Category Validation
+    if(@$_POST["btnsubcat"])
+    {
+        upadd($dbc, "txtcat", "Notice", "Category is required", "hfcat", "cat_name", "tbl_category", "cat_id", "Category Updated", "Category Inserted", "Category Already Exists");
+    }
+//Category Validation
+
+//Design Validation
+    if(@$_POST["btnaddesign"])
+    {
+        upadd($dbc, "txtdesign", "Notice", "Design is required", "hfdesign", "design", "tbl_design", "design_id", "Design Updated", "Design Inserted", "Design Already Exists");
+    }
+//Design Validation
+
+//Fabric Validation
+    if(@$_POST["btnadfab"])
+    {
+        upadd($dbc, "txtfabric", "Notice", "Fabric is required", "hffab", "fabric", "tbl_fabric", "fabric_id", "Fabric Updated", "Fabric Inserted", "Fabric Already Exists");
+    }
+//Fabric Validation
+
+//Feature Validation
+    if(@$_POST["btnadfeat"])
+    {
+        upadd($dbc, "txtfeat", "Notice", "Feature is required", "hffeat", "feature", "tbl_feature", "feature_id", "Feature Updated", "Feature Inserted", "Feature Already Exists");
+    }
+//Feature Validation
+
+//Type Validation
+    if(@$_POST["btnadtype"])
+    {
+        upadd($dbc, "txttype", "Notice", "Type is required", "hftype", "type", "tbl_type", "type_id", "Type Updated", "Type Inserted", "Type Already Exists");
+    }
+//Type Validation
 ?>
 <!-- /PHP Validations -->
 
@@ -135,23 +266,26 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
 
 <!--Main Attributes Table-->
     <table class="table">
+        
         <tr>
+        <!-- Brand form -->
             <td>
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmbrand">
                 <input type="hidden" id="hfbrand" name="hfbrand" value="0"/>
                 <div class="col-xs-6">
                     <b>Brand</b><br />
-                    <span><?php echo @$brand_alert; ?></span>
+                    <!-- <span><?php //echo @$brand_alert; ?></span> -->
                     <input type="text" class="form-control" name="txtbrand" id="txtbrand" />
                     <input type="submit" class="btn btn-primary" id="btnsubbrand" name="btnsubbrand" Value="Add"/>
                     <button type="button" id="btnbrand" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modbrand">&#128270;</button> 
                     </div>
                 </form>    
-                
             </td>
+        <!-- /Brand form -->
             <td>
                 <div class="col-xs-3"></div>
             </td>
+        <!-- Category form -->
             <td>
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmcat">
                 <input type="hidden" id="hfcat" name="hfcat" value="0"/>
@@ -164,10 +298,12 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
                     </div>
                 </form>
             </td>
+        <!-- /Category form -->
         </tr>
         <tr>
+        <!-- Design Form -->
             <td>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmdesign">
+                <form id="frmdesign" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmdesign">
                 <input type="hidden" id="hfdesign" name="hfdesign" value="0"/>
                 <div class="col-xs-6">
                     <b>Design</b><br />
@@ -177,13 +313,14 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
                     <button type="button" id="btndesign" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#moddesign">&#128270;</button> 
                     </div>
                 </form>    
-                
+        <!-- /Design Form -->
             </td>
             <td>
                 <div class="col-xs-3"></div>
             </td>
+        <!-- Fabric Form -->
             <td>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmfab">
+                <form id="frmfab" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmfab">
                 <input type="hidden" id="hffab" name="hffab" value="0"/>
                     <div class="col-xs-6">
                         <b>Fabric</b><br />
@@ -194,10 +331,12 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
                     </div>
                 </form>
             </td>
+        <!-- /Fabric Form -->
         </tr>
         <tr>
+        <!-- Features Form -->
             <td>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmfeat">
+                <form id="frmfeat" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmfeat">
                 <input type="hidden" id="hffeat" name="hffeat" value="0"/>
                 <div class="col-xs-6">
                     <b>Features</b><br />
@@ -207,13 +346,14 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
                     <button type="button" id="btnfeat" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modfeat">&#128270;</button> 
                     </div>
                 </form>    
-                
+        <!-- /Features Form -->
             </td>
             <td>
                 <div class="col-xs-3"></div>
             </td>
+        <!-- Type Form -->
             <td>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmtype">
+                <form id="frmtype" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmtype">
                 <input type="hidden" id="hftype" name="hftype" value="0"/>
                     <div class="col-xs-6">
                         <b>Type</b><br />
@@ -224,6 +364,7 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
                     </div>
                 </form>
             </td>
+        <!-- /Type Form -->
         </tr>
     </table>
 <!--/Main Attributes Table-->
@@ -257,77 +398,267 @@ function displdata($qry_str_param, $qry_id, $frmname, $btnname, $hfname, $colnam
             </div>
         </div>
     <!-- /Brand Modal -->
+
+    <!-- Category Modal -->
+        <div class="modal fade" id="modcat" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Category</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tblcat" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    makeDatatbl('cat_id', 'cat_name', 'tbl_category', $dbc);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Category Modal -->
+
+    <!-- Design Modal -->
+        <div class="modal fade" id="moddesign" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Design</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tbldesign" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Design</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    makeDatatbl('design_id', 'design', 'tbl_design', $dbc);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Design Modal -->
+
+    <!-- Fabric Modal -->
+        <div class="modal fade" id="modfab" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Fabric</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tblfab" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Fabric</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    makeDatatbl('fabric_id', 'fabric', 'tbl_fabric', $dbc);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Fabric Modal -->
+
+    <!-- Features Modal -->
+        <div class="modal fade" id="modfeat" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Features</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tblfeat" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    makeDatatbl('feature_id', 'feature', 'tbl_feature', $dbc);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Features Modal -->
+
+    <!-- Type Modal -->
+        <div class="modal fade" id="modtype" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Types</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tbltype" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    makeDatatbl('type_id', 'type', 'tbl_type', $dbc);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Features Modal -->
+
 <!-- /Modals -->
 
 <!-- Display Data -->
-
-<?php 
-    if($_GET)
-    {
-        $keys = array_keys($_GET);
-        $qry_str_param = $keys[0];
-        $qs_qrr = explode("-", $qry_str_param);
-    
-        if($qs_qrr[1]=="update")
+    <?php 
+        if($_GET)
         {
-            $qry_id = mysqli_real_escape_string($dbc ,trim($_GET[$keys[0]]));
-            switch ($qs_qrr[0]) {
-                case 'tbl_brand':
-                    displdata($qry_str_param, $qry_id, 'frmbrand', 'btnsubbrand', 'hfbrand', 'brand', 'tbl_brand', 'brand_id', $dbc, 'txtbrand');
-                    break;
-                
-                // case 'tbl_category':
-                //     displdata($qry_str_param, $qry_id, 'frmcat', 'btnsubcat', 'hfcat', 'cat_name', 'tbl_category', 'cat_id', $dbc, 'txtcat');
-                //     break;
-                
-                default:
-                    # code...
-                    break;
+            $keys = array_keys($_GET);
+            $qry_str_param = $keys[0];
+            $qs_qrr = explode("-", $qry_str_param);
+        
+            if($qs_qrr[1]=="update")
+            {
+                $qry_id = mysqli_real_escape_string($dbc ,trim($_GET[$keys[0]]));
+                switch ($qs_qrr[0]) {
+                    case 'tbl_brand':
+                        displdata($qry_str_param, $qry_id, 'frmbrand', 'btnsubbrand', 'hfbrand', 'brand', 'tbl_brand', 'brand_id', $dbc, 'txtbrand');
+                        break;
+                    
+                    case 'tbl_category':
+                        displdata($qry_str_param, $qry_id, 'frmcat', 'btnsubcat', 'hfcat', 'cat_name', 'tbl_category', 'cat_id', $dbc, 'txtcat');
+                        break;
+                    
+                    case 'tbl_design':
+                        displdata($qry_str_param, $qry_id, 'frmdesign', 'btnaddesign', 'hfdesign', 'design', 'tbl_design', 'design_id', $dbc, 'txtdesign');
+                        break;
+
+                    case 'tbl_fabric':
+                        displdata($qry_str_param, $qry_id, 'frmfab', 'btnadfab', 'hffab', 'fabric', 'tbl_fabric', 'fabric_id', $dbc, 'txtfabric');
+                        break;
+                    
+                    case 'tbl_feature':
+                        displdata($qry_str_param, $qry_id, 'frmfeat', 'btnadfeat', 'hffeat', 'feature', 'tbl_feature', 'feature_id', $dbc, 'txtfeat');
+                        break;
+
+                    case 'tbl_type':
+                        displdata($qry_str_param, $qry_id, 'frmtype', 'btnadtype', 'hftype', 'type', 'tbl_type', 'type_id', $dbc, 'txttype');
+                        break;
             }
         }
+?>
+<!-- /Display Data -->
 
+<!-- Delete Function -->
+<?php
         if($qs_qrr[1]=="delete")
         {
             $qry_id = mysqli_real_escape_string($dbc ,trim($_GET[$keys[0]]));
             switch ($qs_qrr[0]) {
-                case 'brand':
-                    $sql_delete = "DELETE FROM brand WHERE brand_id =".$qry_id;
-                    $qry_delete = mysqli_query($dbc, $sql_delete);
-                    if($qry_delete)
-                    {
-                        //echo "<script>document.getElementById('brandspan').innerHTML = '<div class=alert alert-success alert-dismissible'>Brand Deleted<a class='close' data-dismiss='alert' aria-label='close'>&times;</a></div>';</script>";
-                        // echo "success";
-                        echo "<script>brandmsgmod();</script>";
-                    }
-                    else
-                    {
-                        echo "del fail";
-                    }
+                case 'tbl_brand':
+                    deltshirt("tbl_brand", "brand_id", $qry_id, $dbc, "Brand is Deleted");
                     break;
                 
-                // case 'tbl_category':
-                //     echo "<script>document.getElementById('btnsubcat').value='Delete'</script>";
-                //     break;
+                case 'tbl_category':
+                    deltshirt("tbl_category", "cat_id", $qry_id, $dbc, "Category is Deleted");
+                    break;
                 
-                default:
-                    # code...
+                case 'tbl_design':
+                    deltshirt("tbl_design", "design_id", $qry_id, $dbc, "Design is Deleted");
+                    break;
+
+                case 'tbl_fabric':
+                    deltshirt("tbl_fabric", "fabric_id", $qry_id, $dbc, "Fabric is Deleted");
+                    break;
+
+                case 'tbl_feature':
+                    deltshirt("tbl_feature", "feature_id", $qry_id, $dbc, "Feature is Deleted");
+                    break;
+                
+                case 'tbl_type':
+                    deltshirt("tbl_type", "type_id", $qry_id, $dbc, "Type is Deleted");
                     break;
             }
         }
     }
 ?>
-
-<!-- /Display Data -->
+<!-- /Delete Function -->
         </div>
     <!--/Page Content Holder -->
 </body>
 
-<!-- Script to initialize datatables -->
-    <script>
+
+<script>
+//Script to initialize datatables 
     $(document).ready(function() 
         {
-            $('#tblbrand').DataTable();
+            $('#tblbrand, #tblcat, #tbldesign, #tblfab, #tblfeat, #tbltype').DataTable(
+            {
+                "pageLength": 5
+            });
         });
-    </script>
-<!-- Script to initialize datatables -->
+// Script to initialize datatables
+
+//on delete, this tigger confirmation box
+    $('.btn-warning').on('click', function (e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        $.confirm({
+            title: 'Confirmation Message',
+            content: 'Are you Sure?',
+            type: 'red',
+            typeAnimated: true,
+            buttons: 
+            {
+                Yes: function () 
+                {
+                    window.location=href
+                },
+                No: function () 
+                {
+                    backgroundDismiss: true
+                }
+            }
+        });
+    });
+//on delete, this tigger confirmation box
+</script>
+
 </html>
