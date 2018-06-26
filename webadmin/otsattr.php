@@ -190,6 +190,7 @@ require('../includes/dbconnect.php');
     <link rel="stylesheet" href="../css/dataTables.bootstrap337.min.css">
     <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="../css/jquery-confirm.min.css">
+    <link rel="stylesheet" href="../css/bootstrap-magnify.css" type="text/css">
 
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
@@ -199,6 +200,7 @@ require('../includes/dbconnect.php');
     <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/popper.js"></script>
     <script src="../js/main_admin.js"></script>
+    <script src="../js/bootstrap-magnify.js"></script>
 <!--/Imports-->
 </head>
 
@@ -217,6 +219,108 @@ require('../includes/dbconnect.php');
         upadd($dbc, "txtsize", "txtdsize", "Notice", "Size and Size Description(optional) are required", "hfsize", "size", "size_desc", "tbl_size", "size_id", "Size Updated", "Size Inserted", "Size Already Exists");
     }
 //Size Validation
+
+//Pattern Validation
+if(@$_POST["btnaddpattern"])
+{
+    $pattern = mysqli_real_escape_string($dbc , trim($_POST["txtpattern"])); 
+    if(empty($pattern))
+    {
+        echo "<script>   $.confirm({
+            title: 'Notice',
+            content: 'Pattern Name and Pattern Image (optional) are required',
+            type: 'orange',
+            typeAnimated: true,
+            buttons: {
+                TryAgain:{
+                    text: 'Try again',
+                    btnClass: 'btn-orange',
+                },
+            }
+        });</script>";
+    }
+    else
+    {
+        if($_GET)
+        {
+            $attr_id = $_POST["hfpattern"];
+            $sql_up = "UPDATE ".$tblname." SET ".$colname."='$attribute', ".$colname2."='$attribute2' WHERE ".$col_id."='$attr_id'";
+            $qry_up = mysqli_query($dbc, $sql_up);
+            if($qry_up)
+            {
+                echo "<script>   $.confirm({
+                    title: '".$msgheader."',
+                    content: '".$upattr."',
+                    type: 'green',
+                    typeAnimated: true,
+                    buttons: {
+                        OK: function () {
+                            window.location='otsattr.php'
+                        },
+                    }
+                });</script>";
+            }
+        }
+        else
+        {
+            $sql_check = "SELECT ".$colname." FROM ".$tblname." WHERE ".$colname."='$attribute'";
+            $sql_qry = mysqli_query($dbc, $sql_check);
+
+            if(mysqli_num_rows($sql_qry) == 0)
+            {
+                $sql_add = "INSERT INTO ".$tblname."(".$colname.", ".$colname2.") VALUES ('$attribute', '$attribute2')";
+                $qry_add = mysqli_query($dbc, $sql_add);
+                if($qry_add)
+                {
+                    echo "<script>$.confirm({
+                        title: 'Notice',
+                        content: '".$inattr."',
+                        type: 'green',
+                        typeAnimated: true,
+                        buttons: {
+                            OK: function () {
+                                window.location='otsattr.php'
+                            },
+                        }
+                    });</script>";
+                }
+                else
+                {
+                    echo "<script>$.confirm({
+                        title: 'Error',
+                        content: 'Database Error',
+                        type: 'orange',
+                        typeAnimated: true,
+                        buttons: {
+                            TryAgain:{
+                                text: 'Try again',
+                                btnClass: 'btn-orange',
+                            },
+                        }
+                    });</script>";
+                }
+            }
+            else
+            {
+                echo "<script>$.confirm({
+                        title: 'Notice',
+                        content: '".$uniqattr."',
+                        type: 'orange',
+                        typeAnimated: true,
+                        buttons: {
+                            TryAgain:{
+                                text: 'Try again',
+                                btnClass: 'btn-orange',
+                            },
+                        }
+                    });</script>";
+            }
+            
+        }
+    }
+}
+//Pattern Validation
+
 ?>
 <!-- /PHP Validations -->
 
@@ -271,7 +375,25 @@ require('../includes/dbconnect.php');
                 <input type="submit" Value="Add" class="btn btn-primary" id="btnaddsize" name="btnaddsize">
                 <button type="button" id="btnsize" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modsize">&#128270;</button> 
             </form>  
-    <!-- /Color Form -->
+    <!-- /Size Form -->
+
+    <hr/>
+
+    <!-- Pattern Form -->
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmsize" class="form-inline" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="hidden" id="hfpattern" name="hfpattern" value="0"/>
+                    <label>Pattern</label>
+                    <input type="text" class="form-control" name="txtpattern" id="txtpattern" />
+                </div>
+                <div class="form-group">
+                    <label>Pattern Image</label>
+                    <input type="file" class="form-control" name="imgpat" id="imgpat">
+                </div>
+            <input type="submit" Value="Add" class="btn btn-primary" id="btnaddpattern" name="btnaddpattern">
+            <button type="button" id="btnpattern" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modpattern">&#128270;</button> 
+        </form>  
+    <!-- /Pattern Form -->
 <!--/Main Content Table-->
 
 <!--Modals-->
@@ -334,6 +456,44 @@ require('../includes/dbconnect.php');
             </div>
         </div>
     <!-- /Size Modal -->
+
+    <!-- Pattern Modal -->
+        <div class="modal fade" id="modpattern" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content datatblcon">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Pattern</h4>
+                    </div>
+                    <div class="modal-body"> 
+                        <table id="tblpattern" class="display table">
+                            <thead>
+                                <tr>
+                                    <th>Pattern Img</th>
+                                    <th>Pattern</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    $sql = "SELECT pattern_id, pattern, p_img_path FROM tbl_pattern;";
+                                    $qry = mysqli_query($dbc, $sql);
+                            
+                                    while($row = mysqli_fetch_array($qry))
+                                    {
+                                        echo "<tr><td><img data-toggle='magnify' class='imgres' src='".$row["p_img_path"]."'/></td><td>".$row["pattern"]."</td>";
+                                        echo "<td><a class='btn btn-primary' href='otsattr.php?tbl_pattern-update=".$row["pattern_id"]."'>Update</a> | <a class='btn btn-warning' href='otsattr.php?tbl_pattern-delete=".$row["pattern_id"]."'>Delete</a></td></tr>";
+                                    }
+                                    mysqli_free_result($qry);
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- /Pattern Modal -->
 <!--/Modals-->
 
 <!--Display Data-->
@@ -355,6 +515,19 @@ require('../includes/dbconnect.php');
                         
                         case 'tbl_size':
                             displdata($qry_str_param, $qry_id, 'frmsize', 'btnaddsize', 'hfsize', 'size', 'size_desc', 'tbl_size', 'size_id', $dbc, 'txtsize', 'txtdsize');
+                            break;
+
+                        case 'tbl_pattern':
+                            echo "<script>document.getElementById('frmsize').action='otsattr.php?".$qry_str_param."=".$qry_id."'</script>";
+                            echo "<script>document.getElementById('btnaddpattern').value='Update'</script>";
+                            echo "<script>document.getElementById('hfpattern').value = '".$qry_id."'</script>";
+                            $sql_dis = "SELECT pattern from tbl_pattern where pattern_id='$qry_id'";
+                            $qry_dis = mysqli_query($dbc, $sql_dis);
+                            if($qry_dis)
+                            {
+                                $result = mysqli_fetch_assoc($qry_dis);
+                            echo "<script>document.getElementById('txtpattern').value='".$result["pattern"]."'</script>";
+                            }
                             break;
                     }
             }
@@ -390,7 +563,7 @@ require('../includes/dbconnect.php');
 //Script to initialize datatables 
     $(document).ready(function() 
         {
-            $('#tblcol, #tblsize').DataTable(
+            $('#tblcol, #tblsize, #tblpattern').DataTable(
             {
                 "pageLength": 5
             });
