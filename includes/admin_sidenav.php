@@ -12,7 +12,11 @@
             </ul>
         </li>
         <li>
-            <a href="tshirt_addAttributes.php">Manage T-Shirt Attributes</a>
+            <a href="#homeSubmenu2" data-toggle="collapse" aria-expanded="false">T-shirt Attributes</a>
+            <ul class="collapse list-unstyled" id="homeSubmenu2">
+                <li><a href="tshirt_addAttributes.php">Attributes</a></li>
+                <li><a href="otsattr.php">Other Attributes</a></li>
+            </ul>
         </li>
         <li>
             <a href="#">About</a>

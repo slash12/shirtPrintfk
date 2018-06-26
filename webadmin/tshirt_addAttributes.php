@@ -180,7 +180,7 @@ require('../includes/dbconnect.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ShirtPrints | Manage Brands</title>
+    <title>ShirtPrints | Manage Attributes</title>
 
 <!--Imports-->
     <link rel="stylesheet" href="../css/style.css" rel="stylesheet">
@@ -196,6 +196,7 @@ require('../includes/dbconnect.php');
     <script src="../js/bootstrap337.min.js"></script>
     <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/popper.js"></script>
+    <script src="../js/main_admin.js"></script>
 <!--/Imports-->
 
 
