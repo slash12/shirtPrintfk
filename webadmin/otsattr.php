@@ -1,5 +1,6 @@
 <?php 
 require('../includes/dbconnect.php'); 
+require('plugins/image/SimpleImage.php');
 //FUNCTIONS
 //make of datatables
     function makeDatatbl($col_id, $col, $cold, $tblname, $dbc)
@@ -158,14 +159,14 @@ require('../includes/dbconnect.php');
         {
             echo "<script>$.confirm({
                 title: 'Error',
-                content: 'Database Error',
+                content: 'Delete Database Error',
                 type: 'orange',
                 typeAnimated: true,
                 buttons: {
                     TryAgain:{
                         text: 'Try again',
                         btnClass: 'btn-orange',
-                        action: funtion ()
+                        action: function ()
                         {
                             window.location='otsattr.php'
                         }
@@ -175,6 +176,7 @@ require('../includes/dbconnect.php');
         }
     }
 //delete t-shirt attributes
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -190,7 +192,6 @@ require('../includes/dbconnect.php');
     <link rel="stylesheet" href="../css/dataTables.bootstrap337.min.css">
     <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
     <link rel="stylesheet" href="../css/jquery-confirm.min.css">
-    <link rel="stylesheet" href="../css/bootstrap-magnify.css" type="text/css">
 
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
@@ -200,7 +201,6 @@ require('../includes/dbconnect.php');
     <script src="../js/jquery-confirm.min.js"></script>
     <script src="../js/popper.js"></script>
     <script src="../js/main_admin.js"></script>
-    <script src="../js/bootstrap-magnify.js"></script>
 <!--/Imports-->
 </head>
 
@@ -221,90 +221,205 @@ require('../includes/dbconnect.php');
 //Size Validation
 
 //Pattern Validation
-if(@$_POST["btnaddpattern"])
-{
-    $pattern = mysqli_real_escape_string($dbc , trim($_POST["txtpattern"])); 
-    if(empty($pattern))
+    if(@$_POST["btnaddpattern"])
     {
-        echo "<script>   $.confirm({
-            title: 'Notice',
-            content: 'Pattern Name and Pattern Image (optional) are required',
-            type: 'orange',
-            typeAnimated: true,
-            buttons: {
-                TryAgain:{
-                    text: 'Try again',
-                    btnClass: 'btn-orange',
-                },
-            }
-        });</script>";
-    }
-    else
-    {
-        if($_GET)
+        $pattern_id = $_POST["hfpattern"];
+        //retrieve pattern name from input box
+        $pattern = mysqli_real_escape_string($dbc , trim($_POST["txtpat"])); 
+    //Pattern name empty validation
+        if(empty($pattern))
         {
-            $attr_id = $_POST["hfpattern"];
-            $sql_up = "UPDATE ".$tblname." SET ".$colname."='$attribute', ".$colname2."='$attribute2' WHERE ".$col_id."='$attr_id'";
-            $qry_up = mysqli_query($dbc, $sql_up);
-            if($qry_up)
+            echo "<script>   $.confirm({
+                title: 'Notice',
+                content: 'Pattern Name and Pattern Image (optional) are required',
+                type: 'orange',
+                typeAnimated: true,
+                buttons: {
+                    TryAgain:{
+                        text: 'Try again',
+                        btnClass: 'btn-orange',
+                    },
+                }
+            });</script>";
+        }
+    //Pattern name empty validation
+        elseif(count($_GET)==0)
+    //insertion of pattern
+        //Pattern Image
+        {
+            if($_FILES['imgpat']['name'] != "")
             {
-                echo "<script>   $.confirm({
-                    title: '".$msgheader."',
-                    content: '".$upattr."',
-                    type: 'green',
+        //Pattern Image Validation
+                $check_num = 0;
+                $target_dir_pat = "../images/tshirt_pattern/";
+                $target_file_pat = $target_dir_pat . basename($_FILES["imgpat"]["name"]);
+                $imageFileType_pat = strtolower(pathinfo($target_file_pat,PATHINFO_EXTENSION));
+        
+                //Size Validation(>500 kb denied)
+                if ($_FILES["imgpat"]["size"] > 500000 || $_FILES["imgpat"]["error"] == 1)
+                {
+                    echo "<script>$.confirm({
+                    title: 'Error Image Upload',
+                    content: 'Image should be less than 500kb',
+                    type: 'orange',
                     typeAnimated: true,
                     buttons: {
-                        OK: function () {
-                            window.location='otsattr.php'
+                        TryAgain:{
+                            text: 'Try again',
+                            btnClass: 'btn-orange',
                         },
                     }
-                });</script>";
-            }
-        }
-        else
-        {
-            $sql_check = "SELECT ".$colname." FROM ".$tblname." WHERE ".$colname."='$attribute'";
-            $sql_qry = mysqli_query($dbc, $sql_check);
-
-            if(mysqli_num_rows($sql_qry) == 0)
-            {
-                $sql_add = "INSERT INTO ".$tblname."(".$colname.", ".$colname2.") VALUES ('$attribute', '$attribute2')";
-                $qry_add = mysqli_query($dbc, $sql_add);
-                if($qry_add)
-                {
-                    echo "<script>$.confirm({
-                        title: 'Notice',
-                        content: '".$inattr."',
-                        type: 'green',
-                        typeAnimated: true,
-                        buttons: {
-                            OK: function () {
-                                window.location='otsattr.php'
-                            },
-                        }
                     });</script>";
+                    $check_num = 1;
                 }
-                else
+                //Image Format Validation
+                if($imageFileType_pat != "jpg" && $imageFileType_pat != "png" && $imageFileType_pat != "jpeg")
                 {
-                    echo "<script>$.confirm({
-                        title: 'Error',
-                        content: 'Database Error',
-                        type: 'orange',
-                        typeAnimated: true,
-                        buttons: {
-                            TryAgain:{
-                                text: 'Try again',
-                                btnClass: 'btn-orange',
+                echo "<script>   $.confirm({
+                    title: 'Error Image Upload',
+                    content: 'only JPG, JPEG and PNG Image format are allowed',
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        TryAgain:{
+                            text: 'Try again',
+                            btnClass: 'btn-orange',
                             },
-                        }
+                        
                     });</script>";
+                    $check_num = 1;
+                }
+        //Pattern Image Validation
+    
+                if($check_num == 0)
+                {
+            //Insertion and Resize of Pattern Image
+                    $sql_unique = "SELECT * FROM tbl_pattern WHERE pattern = '$pattern'";
+                    $qry_unique = mysqli_query($dbc, $sql_unique);
+
+                    if(mysqli_num_rows($qry_unique)==0)
+                    {
+                        move_uploaded_file($_FILES["imgpat"]["tmp_name"], $target_file_pat);
+                        $img_pat = new claviska\SimpleImage($target_file_pat);
+                        try 
+                        {
+                        $img_pat->fromFile($target_file_pat);
+                        $pat_path = "../images/tshirt_pattern/".$pattern.".".$imageFileType_pat;
+                        unlink($target_file_pat);
+                        $img_pat->resize(100, 100)->toFile($pat_path);
+                        } 
+                        catch(Exception $err) 
+                        {
+                            echo "<script>   $.confirm({
+                                title: 'Error Image Upload Resize',
+                                content: 'Error: '".$e->getMessage()."',
+                                type: 'orange',
+                                typeAnimated: true
+                                buttons: {
+                                    TryAgain:{
+                                        text: 'Try again',
+                                        btnClass: 'btn-orange',
+                                    },
+                                }
+                            });</script>";
+                        }
+                        $sql_pat_two = "INSERT INTO tbl_pattern(pattern, p_img_path) VALUES('$pattern', '$pat_path');";
+                        $addpattern_qry = mysqli_query($dbc, $sql_pat_two);
+                        if($addpattern_qry)
+                        {
+                            echo "<script>$.confirm({
+                                title: 'Notice',
+                                content: 'Pattern Image resize and uploaded',
+                                type: 'Green',
+                                typeAnimated: true,
+                                buttons: {
+                                    OK:{
+                                        text: 'OK',
+                                        btnClass: 'btn-success',
+                                        action: function ()
+                                        {
+                                            window.location='otsattr.php'
+                                        }
+                                    },
+                                }
+                            });</script>";
+                        }
+                    } 
+                    else
+                    {
+                        echo "<script>$.confirm({
+                            title: 'Notice',
+                            content: 'Pattern Name already exist!',
+                            type: 'orange',
+                            typeAnimated: true,
+                            buttons: {
+                                TryAgain:{
+                                    text: 'Try again',
+                                    btnClass: 'btn-orange',
+                                },
+                            }
+                        });</script>";
+                    }
+            //Insertion and Resize of Pattern Image
                 }
             }
             else
             {
-                echo "<script>$.confirm({
+                //Insertion of only pattern
+                $sql_unique = "SELECT * FROM tbl_pattern WHERE pattern = '$pattern'";
+                $qry_unique = mysqli_query($dbc, $sql_unique);
+
+                if(mysqli_num_rows($qry_unique)==0)
+                {
+                        $sql_pat_two = "INSERT INTO tbl_pattern(pattern) VALUES('$pattern');";
+                        $addpattern_qry = mysqli_query($dbc, $sql_pat_two);
+                        if($addpattern_qry)
+                        {
+                            echo "<script>$.confirm({
+                                title: 'Notice',
+                                content: 'New Pattern Added',
+                                type: 'green',
+                                typeAnimated: true,
+                                buttons: {
+                                    OK:{
+                                        text: 'OK',
+                                        btnClass: 'btn-success',
+                                        action: function ()
+                                        {
+                                            window.location='otsattr.php'
+                                        }
+                                    },
+                                }
+                            });</script>";
+                //Insertion of only pattern
+                        }
+                        else
+                        {
+                //Error of only pattern insertion
+                        echo "<script>$.confirm({
+                            title: 'Database Pattern Insert Error',
+                            content: '".mysqli_error($dbc)."',
+                            type: 'green',
+                            typeAnimated: true,
+                            buttons: {
+                                OK:{
+                                    text: 'OK',
+                                    btnClass: 'btn-success',
+                                    action: function ()
+                                    {
+                                        window.location='otsattr.php'
+                                    }
+                                },
+                            }
+                        });</script>";
+                //Error of only pattern insertion
+                        }
+                }
+                else
+                {
+                    echo "<script>$.confirm({
                         title: 'Notice',
-                        content: '".$uniqattr."',
+                        content: 'Pattern Name already exist!',
                         type: 'orange',
                         typeAnimated: true,
                         buttons: {
@@ -314,11 +429,167 @@ if(@$_POST["btnaddpattern"])
                             },
                         }
                     });</script>";
+                }
             }
-            
         }
-    }
-}
+    //insertion of pattern
+        if($_GET)
+        {
+            if(empty($pattern))
+            {
+            //Pattern name empty validation
+                echo "<script>$.confirm({
+                    title: 'Update fails',
+                    content: 'Pattern Name and Pattern Image (optional) are required',
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        TryAgain:{
+                            text: 'Try again',
+                            btnClass: 'btn-orange',
+                        },
+                    }
+                });</script>";
+            //Pattern name empty validation
+            }
+            else
+            {
+                //Pattern image validation
+                if($_FILES['imgpat']['name'] != "")
+                {
+                //Pattern image validation
+                    $check_nums = 0;
+                    $target_dir_pat = "../images/tshirt_pattern/";
+                    $target_file_pat = $target_dir_pat . basename($_FILES["imgpat"]["name"]);
+                    $imageFileType_pat = strtolower(pathinfo($target_file_pat,PATHINFO_EXTENSION));
+        
+                    //Size Validation(>500 kb denied)
+                    if ($_FILES["imgpat"]["size"] > 500000 || $_FILES["imgpat"]["error"] == 1)
+                    {
+                    echo "<script>   $.confirm({
+                            title: 'Error Image Upload',
+                            content: 'Image should be less than 500kb',
+                            type: 'orange',
+                            typeAnimated: true,
+                            buttons: {
+                                TryAgain:{
+                                    text: 'Try again',
+                                    btnClass: 'btn-orange',
+                                },
+                            }
+                            });</script>";
+                            $check_nums = 1;
+                    }
+                    //Image Format Validation
+                    elseif($imageFileType_pat != "jpg" && $imageFileType_pat != "png" && $imageFileType_pat != "jpeg")
+                    {
+                        echo "<script>   $.confirm({
+                                title: 'Error Image Upload',
+                                content: 'only JPG, JPEG and PNG Image format are allowed',
+                                type: 'orange',
+                                typeAnimated: true,
+                                buttons: {
+                                    TryAgain:{
+                                        text: 'Try again',
+                                        btnClass: 'btn-orange',
+                                    },
+                                }
+                        });</script>";
+                        $check_nums = 1;
+                    }
+                //Pattern image validation
+                    
+                    if($check_nums == 0)
+                    //update and Resize of Pattern Image
+                    {
+                            move_uploaded_file($_FILES["imgpat"]["tmp_name"], $target_file_pat);
+                            $img_pat = new claviska\SimpleImage($target_file_pat);
+                            try 
+                            {
+                                $img_pat->fromFile($target_file_pat);
+                                $pat_path = "../images/tshirt_pattern/".$pattern.".".$imageFileType_pat;
+                                unlink($target_file_pat);
+                                $img_pat->resize(100, 100)->toFile($pat_path);
+                            } 
+                            catch(Exception $err) 
+                            {
+                                echo "<script>   $.confirm({
+                                    title: 'Error Image Upload Resize',
+                                    content: 'Error: '".$e->getMessage()."',
+                                    type: 'orange',
+                                    typeAnimated: true
+                                    buttons: {
+                                        TryAgain:{
+                                            text: 'Try again',
+                                            btnClass: 'btn-orange',
+                                        },
+                                    }
+                                });</script>";
+                            }
+                            
+                            $sql_up = "UPDATE tbl_pattern SET pattern='$pattern', p_img_path='$pat_path' WHERE pattern_id='$pattern_id'";
+                            $qry_up = mysqli_query($dbc, $sql_up);
+                            if($qry_up)
+                            {
+                                echo "<script>$.confirm({
+                                    title: 'Notice',
+                                    content: 'Pattern Image resize and updated',
+                                    type: 'Green',
+                                    typeAnimated: true,
+                                    buttons: {
+                                        OK:{
+                                            text: 'OK',
+                                            btnClass: 'btn-success',
+                                            action: function ()
+                                            {
+                                                window.location='otsattr.php'
+                                            }
+                                        },
+                                    }
+                                });</script>";
+                            }
+                    }
+                    //update and Resize of Pattern Image
+                }
+                else
+                {
+                    
+                //update only pattern name
+                            $pattern_id = $_POST["hfpattern"];
+                            echo "<script>alert('empty file field, only pattern update ".$pattern_id."');</script>";
+                            $sql_up = "UPDATE tbl_pattern SET pattern='$pattern' WHERE pattern_id='$pattern_id'";
+                            $qry_up = mysqli_query($dbc, $sql_up);
+                            if($qry_up)
+                            {
+                                echo "<script>$.confirm({
+                                    title: 'Notice',
+                                    content: 'Pattern Name updated',
+                                    type: 'Green',
+                                    typeAnimated: true,
+                                    buttons: {
+                                        OK:{
+                                            text: 'OK',
+                                            btnClass: 'btn-success',
+                                            action: function ()
+                                            {
+                                                window.location='otsattr.php'
+                                            }
+                                        },
+                                    }
+                                });</script>";
+                            }
+                //update only pattern name
+                }
+            }
+        }
+    }    
+
+               
+        
+           
+
+        
+    
 //Pattern Validation
 
 ?>
@@ -355,6 +626,7 @@ if(@$_POST["btnaddpattern"])
                     <input type="text" class="form-control" id="txtcold" name="txtcold"/>
                 </div>
             <input type="submit" Value="Add" class="btn btn-primary" id="btnaddcol" name="btnaddcol">
+            <a href="otsattr.php" class="btn btn-info">Reset</a>
             <button type="button" id="btncol" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modcol">&#128270;</button> 
         </form>  
     <!-- /Color Form -->
@@ -373,25 +645,26 @@ if(@$_POST["btnaddpattern"])
                         <input type="text" class="form-control" id="txtdsize" name="txtdsize"/>
                     </div>
                 <input type="submit" Value="Add" class="btn btn-primary" id="btnaddsize" name="btnaddsize">
+                <a href="otsattr.php" class="btn btn-info">Reset</a>
                 <button type="button" id="btnsize" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modsize">&#128270;</button> 
             </form>  
     <!-- /Size Form -->
 
     <hr/>
-
     <!-- Pattern Form -->
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmsize" class="form-inline" enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="hidden" id="hfpattern" name="hfpattern" value="0"/>
-                    <label>Pattern</label>
-                    <input type="text" class="form-control" name="txtpattern" id="txtpattern" />
-                </div>
-                <div class="form-group">
-                    <label>Pattern Image</label>
-                    <input type="file" class="form-control" name="imgpat" id="imgpat">
-                </div>
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" id="frmpat" class="form-inline" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="hidden" id="hfpattern" name="hfpattern" value="0"/>
+                        <label>Pattern</label>
+                        <input type="text" class="form-control" name="txtpat" id="txtpat" />
+                    </div>
+                    <div class="form-group">
+                        <label>Pattern Image</label>
+                        <input type="file" class="form-control" id="imgpat" name="imgpat">
+                    </div>
             <input type="submit" Value="Add" class="btn btn-primary" id="btnaddpattern" name="btnaddpattern">
-            <button type="button" id="btnpattern" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modpattern">&#128270;</button> 
+            <a href="otsattr.php" class="btn btn-info">Reset</a>
+            <button type="button" id="btnsize" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modpattern">&#128270;</button> 
         </form>  
     <!-- /Pattern Form -->
 <!--/Main Content Table-->
@@ -482,7 +755,7 @@ if(@$_POST["btnaddpattern"])
                             
                                     while($row = mysqli_fetch_array($qry))
                                     {
-                                        echo "<tr><td><img data-toggle='magnify' class='imgres' src='".$row["p_img_path"]."'/></td><td>".$row["pattern"]."</td>";
+                                        echo "<tr><td><img class='imgres' src='".$row["p_img_path"]."'/></td><td>".$row["pattern"]."</td>";
                                         echo "<td><a class='btn btn-primary' href='otsattr.php?tbl_pattern-update=".$row["pattern_id"]."'>Update</a> | <a class='btn btn-warning' href='otsattr.php?tbl_pattern-delete=".$row["pattern_id"]."'>Delete</a></td></tr>";
                                     }
                                     mysqli_free_result($qry);
@@ -518,15 +791,15 @@ if(@$_POST["btnaddpattern"])
                             break;
 
                         case 'tbl_pattern':
-                            echo "<script>document.getElementById('frmsize').action='otsattr.php?".$qry_str_param."=".$qry_id."'</script>";
-                            echo "<script>document.getElementById('btnaddpattern').value='Update'</script>";
-                            echo "<script>document.getElementById('hfpattern').value = '".$qry_id."'</script>";
-                            $sql_dis = "SELECT pattern from tbl_pattern where pattern_id='$qry_id'";
+                            echo "<script>document.getElementById('frmpat').action='otsattr.php?".$qry_str_param."=".$qry_id."';</script>";
+                            echo "<script>document.getElementById('btnaddpattern').value='Update';</script>";
+                            echo "<script>document.getElementById('hfpattern').value = '".$qry_id."';</script>";
+                            $sql_dis = "SELECT * from tbl_pattern where pattern_id='$qry_id'";
                             $qry_dis = mysqli_query($dbc, $sql_dis);
                             if($qry_dis)
                             {
                                 $result = mysqli_fetch_assoc($qry_dis);
-                            echo "<script>document.getElementById('txtpattern').value='".$result["pattern"]."'</script>";
+                            echo "<script>document.getElementById('txtpat').value='".$result["pattern"]."'</script>";
                             }
                             break;
                     }
@@ -547,6 +820,17 @@ if(@$_POST["btnaddpattern"])
                     
                     case 'tbl_size':
                         deltshirt("tbl_size", "size_id", $qry_id, $dbc, "Size is Deleted");
+                        break;
+                    
+                    case 'tbl_pattern':
+                        $sql_pat = "SELECT p_img_path FROM tbl_pattern WHERE pattern_id='$qry_id';";
+                        $qry_pat = mysqli_query($dbc, $sql_pat);
+                        $res = mysqli_fetch_assoc($qry_pat);
+                        if($qry_pat)
+                        {
+                            unlink($res["p_img_path"]);
+                            deltshirt("tbl_pattern", "pattern_id", $qry_id, $dbc, "Pattern is Deleted");
+                        }
                         break;
                 }
             }

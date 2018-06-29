@@ -278,6 +278,7 @@ require('../includes/dbconnect.php');
                     <!-- <span><?php //echo @$brand_alert; ?></span> -->
                     <input type="text" class="form-control" name="txtbrand" id="txtbrand" />
                     <input type="submit" class="btn btn-primary" id="btnsubbrand" name="btnsubbrand" Value="Add"/>
+                    <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                     <button type="button" id="btnbrand" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modbrand">&#128270;</button> 
                     </div>
                 </form>    
@@ -295,6 +296,7 @@ require('../includes/dbconnect.php');
                         <span><?php echo @$cat_alert; ?></span>
                         <input type="text" class="form-control" name="txtcat" id="txtcat" />
                         <input type="submit" class="btn btn-primary" id="btnsubcat" name="btnsubcat" Value="Add"/>
+                        <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                         <button type="button" id="btncat" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modcat">&#128270;</button>
                     </div>
                 </form>
@@ -311,6 +313,7 @@ require('../includes/dbconnect.php');
                     <span><?php echo @$design_alert; ?></span>
                     <input type="text" class="form-control" name="txtdesign" id="txtdesign" />
                     <input type="submit" class="btn btn-primary" id="btnaddesign" name="btnaddesign" Value="Add"/>
+                    <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                     <button type="button" id="btndesign" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#moddesign">&#128270;</button> 
                     </div>
                 </form>    
@@ -328,6 +331,7 @@ require('../includes/dbconnect.php');
                         <span><?php echo @$fabric_alert; ?></span>
                         <input type="text" class="form-control" name="txtfabric" id="txtfabric" />
                         <input type="submit" class="btn btn-primary" id="btnadfab" name="btnadfab" Value="Add"/>
+                        <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                         <button type="button" id="btnfab" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modfab">&#128270;</button>
                     </div>
                 </form>
@@ -344,6 +348,7 @@ require('../includes/dbconnect.php');
                     <span><?php echo @$feat_alert; ?></span>
                     <input type="text" class="form-control" name="txtfeat" id="txtfeat" />
                     <input type="submit" class="btn btn-primary" id="btnadfeat" name="btnadfeat" Value="Add"/>
+                    <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                     <button type="button" id="btnfeat" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modfeat">&#128270;</button> 
                     </div>
                 </form>    
@@ -361,6 +366,7 @@ require('../includes/dbconnect.php');
                         <span><?php echo @$type_alert; ?></span>
                         <input type="text" class="form-control" name="txttype" id="txttype" />
                         <input type="submit" class="btn btn-primary" id="btnadtype" name="btnadtype" Value="Add"/>
+                        <a href="tshirt_addAttributes.php" class="btn btn-info">Reset</a>
                         <button type="button" id="btntype" class="btn btn-info btn-lg btnpad" data-toggle="modal" data-target="#modtype">&#128270;</button>
                     </div>
                 </form>
