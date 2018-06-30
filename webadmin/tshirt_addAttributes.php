@@ -14,6 +14,26 @@ require('../includes/dbconnect.php');
         }
         mysqli_free_result($qry);
     }
+
+    function makeDatatblop($col_id, $col,$tblname, $dbc, $limit)
+    {
+        $sql = "SELECT $col_id, $col FROM $tblname;";
+        $qry = mysqli_query($dbc, $sql);
+
+        while($row = mysqli_fetch_array($qry))
+        {
+            echo "<tr><td>".$row["$col"]."</td>";
+            if($row["$col"] == $limit)
+            {
+                echo "<td><a class='btn btn-primary disabled disabled_link' href='tshirt_addAttributes.php?".$tblname."-update=".$row["$col_id"]."'>Update</a> | <a class='btn btn-warning disabled disabled_link' href='tshirt_addAttributes.php?".$tblname."-delete=".$row["$col_id"]."'>Delete</a></td></tr>";
+            }
+            else
+            {
+                echo "<td><a class='btn btn-primary' href='tshirt_addAttributes.php?".$tblname."-update=".$row["$col_id"]."'>Update</a> | <a class='btn btn-warning' href='tshirt_addAttributes.php?".$tblname."-delete=".$row["$col_id"]."'>Delete</a></td></tr>";
+            }
+        }
+        mysqli_free_result($qry);
+    }
 //make of datatables
 
 //to display selected field in the textbox
@@ -454,7 +474,7 @@ require('../includes/dbconnect.php');
                             </thead>
                             <tbody>
                                 <?php 
-                                    makeDatatbl('design_id', 'design', 'tbl_design', $dbc);
+                                    makeDatatblop('design_id', 'design', 'tbl_design', $dbc, 'None');
                                 ?>
                             </tbody>
                         </table>
@@ -512,7 +532,7 @@ require('../includes/dbconnect.php');
                             </thead>
                             <tbody>
                                 <?php 
-                                    makeDatatbl('feature_id', 'feature', 'tbl_feature', $dbc);
+                                    makeDatatblop('feature_id', 'feature', 'tbl_feature', $dbc, 'None');
                                 ?>
                             </tbody>
                         </table>

@@ -583,13 +583,6 @@ require('plugins/image/SimpleImage.php');
             }
         }
     }    
-
-               
-        
-           
-
-        
-    
 //Pattern Validation
 
 ?>
@@ -756,7 +749,15 @@ require('plugins/image/SimpleImage.php');
                                     while($row = mysqli_fetch_array($qry))
                                     {
                                         echo "<tr><td><img class='imgres' src='".$row["p_img_path"]."'/></td><td>".$row["pattern"]."</td>";
-                                        echo "<td><a class='btn btn-primary' href='otsattr.php?tbl_pattern-update=".$row["pattern_id"]."'>Update</a> | <a class='btn btn-warning' href='otsattr.php?tbl_pattern-delete=".$row["pattern_id"]."'>Delete</a></td></tr>";
+                                        if($row["pattern"]=="None")
+                                        {
+                                            echo "<td><a class='btn btn-primary disabled disabled_link' href='otsattr.php?tbl_pattern-update=".$row["pattern_id"]."'>Update</a> | <a class='btn btn-warning disabled disabled_link' href='otsattr.php?tbl_pattern-delete=".$row["pattern_id"]."'>Delete</a></td></tr>";
+                                        }
+                                        else
+                                        {
+                                            echo "<td><a class='btn btn-primary' href='otsattr.php?tbl_pattern-update=".$row["pattern_id"]."'>Update</a> | <a class='btn btn-warning' href='otsattr.php?tbl_pattern-delete=".$row["pattern_id"]."'>Delete</a></td></tr>";
+                                        }
+                                        
                                     }
                                     mysqli_free_result($qry);
                                 ?>

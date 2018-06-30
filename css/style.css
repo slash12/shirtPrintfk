@@ -415,7 +415,7 @@ span.glyphicon
 
 .tdcoladjust
 {
-  padding-left:4%;
+  padding-left:2.5%;
 }
 
 #setting_form td
@@ -710,4 +710,10 @@ hr
 .imgres
 {
   width:13%;
+}
+
+.disabled_link
+{
+    pointer-events: none;
+    cursor: default;
 }
