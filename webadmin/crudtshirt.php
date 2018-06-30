@@ -15,6 +15,8 @@ error_reporting(E_ALL & ~E_WARNING);
         <link rel="stylesheet" href="../css/bootstrap-select.min.css">
         <link rel="stylesheet" href="../css/file-upload-with-preview.css">
         <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
+        <link rel="stylesheet" href="../css/jquery-confirm.min.css">
+
         <script type="text/javascript" src="../js/jquery.min.js"></script>
         <script type="text/javascript" src="../js/jquery.form.js"></script>
         <script src="../js/popper-select.js"></script>
@@ -22,11 +24,14 @@ error_reporting(E_ALL & ~E_WARNING);
         <script src="../js/bootstrap-select.min.js"></script>
         <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="../js/main_admin.js"></script>
+        <script src="../js/jquery-confirm.min.js"></script>
+        
 <!--/Imports-->
 
     </head>
 <!--functions-->
     <?php
+
     //save state + update state render functions
     function savStatetxt($txtname, $upid, $upval)
     {
@@ -83,7 +88,7 @@ error_reporting(E_ALL & ~E_WARNING);
     function updateasso($tablename, $shirt_id, $sltcc, $columnname, $dbc)
     {
         $del_qry = mysqli_query($dbc, "DELETE FROM $tablename WHERE tshirt_id=".$shirt_id);
-        if(del_qry)
+        if($del_qry)
         {
         foreach ($sltcc as $value)
         {
@@ -416,9 +421,9 @@ error_reporting(E_ALL & ~E_WARNING);
   //Update Tshirt
               if(isset($_GET['uptshirt']))
               {
-                //update tshirt details from tbl_shirt
-                $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty', model_no='$modno' ";
-
+                  //update tshirt details from tbl_shirt
+                  $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty', model_no='$modno' ";
+                
                 //check if imgf is changed
                 if(isset($target_file_imgf))
                 {
@@ -509,6 +514,24 @@ error_reporting(E_ALL & ~E_WARNING);
               else
               {
   //Insert new Tshirt
+                //check Model No. Uniqueness
+                $qry_niq = mysqli_query($dbc, "SELECT * FROM tbl_tshirt WHERE model_no = '$modno'");
+                if(mysqli_num_rows($qry_niq)>0)
+                {
+                  echo "<script>   $.confirm({
+                    title: 'Warning',
+                    content: 'The T-Shirt Model already exists, Please Choose another!',
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        TryAgain:{
+                            text: 'Try again',
+                            btnClass: 'btn-orange',
+                        },
+                    }
+                  });</script>";
+                }
+                else{
               $insert_qry= "INSERT INTO `tbl_tshirt` (`brand_id`, `category_id`, `design_id`, `type_id`, `img_front`, `img_back`, `price`, `size_id`, `quantity`, `model_no`) VALUES ('$brand', '$category', '$design', '$type', '$target_file_imgf', '$target_file_imgb', '$price', '$size', '$qty','$modno');";
               $insert_qry_exe = mysqli_query($dbc, $insert_qry);
 
@@ -624,6 +647,7 @@ error_reporting(E_ALL & ~E_WARNING);
                       }
                 }
               }
+            }
   //Insert new Tshirt//
             }
 
