@@ -1587,6 +1587,14 @@ error_reporting(E_ALL & ~E_WARNING);
   <!-- /New T-Shirt added Modal -->
 <!-- /Modals-->
 
+<?php
+  if(isset($_GET['uptshirt']))
+  {
+    echo "<script> document.getElementById('txtmodno').readOnly = true;</script>";
+    echo "<script>alert('test');</script>";
+  }
+?>
+
 <!-- Image Preview Script-->
     <script src="../js/file-upload-with-preview.js"></script>
     <script>
