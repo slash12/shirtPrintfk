@@ -71,7 +71,7 @@ a, a:hover, a:focus {
   SIDEBAR STYLE
 ----------------------------------------------------- */
 #sidebar {
-  width: 205px;
+  width: 180px !important;
   position: fixed;
   top: 0;
   left: 0;

@@ -7,6 +7,11 @@ if(!isset($_SESSION['user_login']))
   require('includes/session_timer.php');
 }
 
+if(isset($_SESSION['admin']))
+{
+  header('Location:webadmin/crudtshirt.php');
+}
+
 ?>
 <!DOCTYPE html>
 <html>

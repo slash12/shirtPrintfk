@@ -41,6 +41,6 @@
         </li>
     </ul>
     <ul class="list-unstyled CTAs">
-        <li><a href="#" class="lgout">Log Out</a></li>
+        <li><a href="admin_logout.php" class="lgout">Log Out</a></li>
     </ul>
 </nav>
