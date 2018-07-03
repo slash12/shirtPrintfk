@@ -29,6 +29,7 @@
 body {
   font-family: 'Ariel', sans-serif;
   background: #fafafa;
+  overflow-x: hidden;
 }
 
 p {
@@ -717,3 +718,37 @@ hr
     pointer-events: none;
     cursor: default;
 }
+
+/*Search Page*/
+.body-container
+{
+  padding-bottom:5%;
+}
+
+  /*T-Shirt Card*/
+  .card-tshirt 
+  {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 16%;
+    display:inline-block !important;
+    margin-bottom:1%;
+  }
+
+  .card-tshirt:hover 
+    {
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+  .container 
+    {
+      padding: 2px 16px;
+    }
+  
+  .search-img
+    {
+      width: 66% !important;
+      margin-left: 16% !important;
+    }
+  /*T-Shirt Card*/
+/*Search Page*/
