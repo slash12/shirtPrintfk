@@ -1,9 +1,11 @@
 //datatable for view tshirt
 $(document).ready(function () {
     $('#mtstbl').DataTable({
-        "pageLength": 4,
         "autoWidth": false,
-        "scrollX": true
+        "scrollX": true,
+        "scrollY": "260px",
+        "bPaginate": false,
+        "scrollCollapse": true
     });
 });
 

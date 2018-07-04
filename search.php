@@ -75,27 +75,36 @@
 <!--Get Search values-->
     <?php 
         $sql_tshirt = "SELECT 
-                        ts.tshirt_id AS tshirt_id,
-                        ts.price AS Price,
-                        ts.img_front AS imgf,
-                        ts.model_no AS modno,
-                        GROUP_CONCAT(DISTINCT tp.pattern) AS Pattern, 
-                        GROUP_CONCAT(DISTINCT tf.fabric) As Fabric,
-                        GROUP_CONCAT(DISTINCT te.feature) As Feature,
-                        (SELECT brand FROM tbl_brand tb WHERE tb.brand_id = ts.brand_id) As Brand,
-                        (SELECT cat_name FROM tbl_category tcat WHERE tcat.cat_id = ts.category_id) As Category,
-                        (SELECT design FROM tbl_design tde WHERE tde.design_id = ts.design_id) As Design,
-                        (SELECT type FROM tbl_type ty WHERE ty.type_id = ts.type_id) As Type
-                        FROM tbl_tshirt_pattern tsp, tbl_pattern tp, tbl_tshirt ts, tbl_tshirt_color tsc, tbl_color tc, tbl_fabric tf, tbl_tshirt_fabric tsf, tbl_feature te, tbl_tshirt_features tfe
-                        WHERE ts.tshirt_id = tsp.tshirt_id 
-                        AND tsp.pattern_id = tp.pattern_id
-                        AND ts.tshirt_id = tsc.tshirt_id
-                        AND tsf.tshirt_id = ts.tshirt_id
-                        AND tsf.fabric_id = tf.fabric_id
-                        AND tfe.tshirt_id = ts.tshirt_id
-                        AND tfe.feature_id = te.feature_id
-                        GROUP BY ts.tshirt_id";
-            
+                        tshirt_id,
+                        price,
+                        img_front AS imgf,
+                        tshirt_title
+                        FROM tbl_tshirt";
+
+            if($_GET)
+            {
+                $sql_tshirt .= " WHERE ";
+                $search_param = mysqli_escape_string($dbc, trim($_GET["txtsearch"]));
+                if(empty($search_param))
+                {
+                    $sql_tshirt .= "";
+                }
+                else
+                {
+                    $sql_tshirt .= "tshirt_title LIKE '%".$search_param."%'";
+                }
+
+                if(isset($_GET["slttype"]) && !empty($search_param))
+                {
+                    $type_param = mysqli_escape_string($dbc, trim($_GET["slttype"]));
+                    $sql_tshirt .= " OR type_id =".$type_param."; ";
+                }
+                else
+                {
+                    $type_param = mysqli_escape_string($dbc, trim($_GET["slttype"]));
+                    $sql_tshirt .=" type_id =".$type_param.";";
+                }
+            }
         $qry_tshirt = mysqli_query($dbc, $sql_tshirt);
         if($qry_tshirt)
         {
@@ -105,9 +114,9 @@
                     <div class="card card-tshirt">
                         <img src="<?php echo substr($res_tshirt['imgf'], 3); ?>" class="search-img" alt="Avatar">
                         <div class="container">
-                            <h4><b><?php echo $res_tshirt["modno"]; ?></b></h4> 
-                            <p><?php echo  $res_tshirt["Brand"]." ,".$res_tshirt["Category"]." ,...";?></p>
-                            <span><a class="btn btn-info" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a></span> 
+                            <h6><b><?php echo mb_strimwidth($res_tshirt["tshirt_title"], 0, 20, "..."); ?></b></h6> 
+                            <span>MUR <s><?php echo $res_tshirt["price"] + 100 ; ?></s> <?php echo $res_tshirt["price"]; ?></span>
+                            <span><a class="btn btn-info tsdetails" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a></span> 
                         </div>
                     </div>
                 <?php

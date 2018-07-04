@@ -132,6 +132,7 @@ error_reporting(E_ALL & ~E_WARNING);
         $shirtimgf_av = $res_sel['img_front'];
         $shirtimgb_av = $res_sel['img_back'];
         $shirtmodno_av = $res_sel['model_no'];
+        $shirttstitle_av = $res_sel['tshirt_title'];
       }
     //Retrieve T-Shirt id,brand,category,design,type,size//
 
@@ -399,6 +400,18 @@ error_reporting(E_ALL & ~E_WARNING);
             $modno = mysqli_real_escape_string($dbc, $model_cc);
           }
 
+          //tshirt title validation
+          @$tstitle_cc = $_POST['txttstitle'];
+          if(empty($tstitle_cc))
+          {
+            $arr_err[] = "Please enter a T-Shirt Title";
+            $tstitle_err = "Please enter a T-Shirt Title";
+          }
+          else
+          {
+            $tstitle = mysqli_real_escape_string($dbc, $tstitle_cc);
+          }
+
           //fabric validation
           $fabric_cc = @$_POST['sltfabric'];
           if(empty($fabric_cc))
@@ -422,7 +435,7 @@ error_reporting(E_ALL & ~E_WARNING);
               if(isset($_GET['uptshirt']))
               {
                   //update tshirt details from tbl_shirt
-                  $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty', model_no='$modno' ";
+                  $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty', model_no='$modno', tshirt_title = '$tstitle' ";
                 
                 //check if imgf is changed
                 if(isset($target_file_imgf))
@@ -532,7 +545,7 @@ error_reporting(E_ALL & ~E_WARNING);
                   });</script>";
                 }
                 else{
-              $insert_qry= "INSERT INTO `tbl_tshirt` (`brand_id`, `category_id`, `design_id`, `type_id`, `img_front`, `img_back`, `price`, `size_id`, `quantity`, `model_no`) VALUES ('$brand', '$category', '$design', '$type', '$target_file_imgf', '$target_file_imgb', '$price', '$size', '$qty','$modno');";
+              $insert_qry= "INSERT INTO `tbl_tshirt` (`brand_id`, `category_id`, `design_id`, `type_id`, `img_front`, `img_back`, `price`, `size_id`, `quantity`, `model_no`, `tshirt_title`) VALUES ('$brand', '$category', '$design', '$type', '$target_file_imgf', '$target_file_imgb', '$price', '$size', '$qty','$modno', '$tstitle');";
               $insert_qry_exe = mysqli_query($dbc, $insert_qry);
 
               if($insert_qry_exe)
@@ -996,22 +1009,39 @@ error_reporting(E_ALL & ~E_WARNING);
             </div>
           <!--/Model No Field-->
         </td>
+        <td class="tdcoladjust">
+          <!--T-Shirt Title Field-->
+            <label class="mr-sm-2" for="txttstitle">Title</label>
+            </td>
+            <td>
+            <div class="col-xs-8">
+              <input type="text" name="txttstitle" id="txttstitle" class="form-control" placeholder="Title" value="<?php @savStatetxt(@$_POST['txttstitle'], @$shirt_id_up, @$shirttstitle_av); ?>">       
+            </div>
+          <!--/Model No Field-->
+        </td>
       </tr>
 
       <tr>
   <!--Error Msgs-->
         <td colspan="2"><span class="errfrm"><?php echo @$features_err; ?> </span></td>
         <td colspan="2"><span class="errfrm"><?php echo @$modno_err; ?> </span></td>
+        <td colspan="2"><span class="errfrm"><?php echo @$tstitle_err; ?> </span></td>
   <!--/Error Msgs-->
-
-        <td class="tdcoladjust">
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+        <td colspan="2">&nbsp;</td>
+        <td colspan="2" class="tdcoladjust">
   <!--Button Field-->
           <!--Submit Button-->
-          <input type="submit" class="btn btn-primary" name="btnsubas" id="btnsubas">
+          <input type="submit" class="btn btn-primary" name="btnsubas" id="btnsubas" value="Save">
+          <input class="btn btn-info" name="btnreset" id="btnreset" type="button" onclick="clrfrm();" value="Reset">
           </td>
           <td class="tdcoladjust">
           <!--Reset Button-->
-          <input class="btn btn-primary" name="btnreset" id="btnreset" type="button" onclick="clrfrm();" value="Reset">
+          
   <!--/Button Field-->
         </td>
       </tr>
@@ -1591,7 +1621,6 @@ error_reporting(E_ALL & ~E_WARNING);
   if(isset($_GET['uptshirt']))
   {
     echo "<script> document.getElementById('txtmodno').readOnly = true;</script>";
-    echo "<script>alert('test');</script>";
   }
 ?>
 

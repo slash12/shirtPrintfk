@@ -108,7 +108,6 @@ function save_state($a)
                 }
               header('Location: index.php');
             }
-
           }
           else
           {

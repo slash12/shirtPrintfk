@@ -178,7 +178,7 @@ if(isset($_SESSION['uname']))
                 $mail->Body    = "
                 Hello $uname, <br>
                 Please Click on the link below to activate your Account: <br><br>
-                <a href=\"http://localhost:8001/merge220318/tdsmerge220318/emailVerified.php?email=$email&token=$token\">Activate your account</a>
+                <a href=\"http://localhost:8001/shirtprintfk/emailVerified.php?email=$email&token=$token\">Activate your account</a>
             ";
 
                 if ($mail->send()) {
