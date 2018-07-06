@@ -50,6 +50,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" id="txtsearch" name="txtsearch" placeholder="Search...">
             </div>
+        <!-- Type Combo -->
             <div class="form-group">
                 <select name="slttype" class="selectpicker" id="slttype">
                     <option value="0" selected="true">Choose Type</option>
@@ -68,63 +69,131 @@
                     ?>
                 </select>
             </div>
+        <!-- /Type Combo -->
+        <!-- Brand Combo -->
+            <div class="form-group">
+                <select name="sltbrand" class="selectpicker" id="sltbrand">
+                    <option value="0" selected="true">Choose Brand</option>
+                    <?php 
+                        $sql_brand = "SELECT * FROM tbl_brand;";
+                        $qry_brand = mysqli_query($dbc, $sql_brand);
+                        if($qry_brand)
+                        {
+                            while($res_brand = mysqli_fetch_array($qry_brand, MYSQLI_ASSOC))
+                            {
+                            ?>
+                            <option value="<?php echo $res_brand['brand_id']; ?>"><?php echo $res_brand['brand'] ?></option>
+                            <?php
+                            }
+                        }
+                    ?>
+                </select>
+            </div>
+        <!-- /Brand Combo -->
+        <!-- Category Combo -->
+            <div class="form-group">
+                <select name="sltcat" class="selectpicker" id="sltcat">
+                    <option value="0" selected="true">Choose Category</option>
+                    <?php 
+                        $sql_cat = "SELECT * FROM tbl_category;";
+                        $qry_cat = mysqli_query($dbc, $sql_cat);
+                        if($qry_cat)
+                        {
+                            while($res_cat = mysqli_fetch_array($qry_cat, MYSQLI_ASSOC))
+                            {
+                            ?>
+                            <option value="<?php echo $res_cat['cat_id']; ?>"><?php echo $res_cat['cat_name'] ?></option>
+                            <?php
+                            }
+                        }
+                    ?>
+                </select>
+            </div>
+        <!-- /Category Combo -->
             <button type="submit" class="btn btn-secondary">Search</button>
+            <button type="reset" onclick="window.location='search.php'" class="btn btn-warning">Reset</button>
         </form> 
         <hr>
        
 <!--Get Search values-->
     <?php 
-        $sql_tshirt = "SELECT 
-                        tshirt_id,
-                        price,
-                        img_front AS imgf,
-                        tshirt_title
-                        FROM tbl_tshirt";
+       
 
             if($_GET)
             {
-                $sql_tshirt .= " WHERE ";
-                $search_param = mysqli_escape_string($dbc, trim($_GET["txtsearch"]));
-                if(empty($search_param))
-                {
-                    $sql_tshirt .= "";
-                }
-                else
-                {
-                    $sql_tshirt .= "tshirt_title LIKE '%".$search_param."%'";
-                }
+            // Retrieve text search value
+                @$search = mysqli_escape_string($dbc, trim($_GET["txtsearch"]));
+            // Retrieve type value
+                @$type_param = mysqli_escape_string($dbc, trim($_GET["slttype"]));
+            // Retrieve brand value
+                @$brand_param = mysqli_escape_string($dbc, trim($_GET["sltbrand"]));
+            // Retrieve Category value
+                @$cat_param = mysqli_escape_string($dbc, trim($_GET["sltcat"]));
 
-                if(isset($_GET["slttype"]) && !empty($search_param))
+            //Search Value Validation
+                if(empty($search))
                 {
-                    $type_param = mysqli_escape_string($dbc, trim($_GET["slttype"]));
-                    $sql_tshirt .= " OR type_id =".$type_param."; ";
+                    $search_param = "";
                 }
                 else
                 {
-                    $type_param = mysqli_escape_string($dbc, trim($_GET["slttype"]));
-                    $sql_tshirt .=" type_id =".$type_param.";";
+                    $search_param = "%$search%";
                 }
+            //Search Value Validation
+            
+                $sql_tshirt = "SELECT 
+                tshirt_id,
+                price,
+                img_front AS imgf,
+                tshirt_title
+                FROM tbl_tshirt WHERE type_id = '".@$type_param."' 
+                OR tshirt_title LIKE '".@$search_param."'
+                OR brand_id = '".@$brand_param."'
+                OR category_id = '".@$cat_param."'";
             }
-        $qry_tshirt = mysqli_query($dbc, $sql_tshirt);
-        if($qry_tshirt)
-        {
-            while($res_tshirt = mysqli_fetch_array($qry_tshirt, MYSQLI_ASSOC))
+            else
             {
-                ?>
+                $sql_tshirt = "SELECT 
+                tshirt_id,
+                price,
+                img_front AS imgf,
+                tshirt_title
+                FROM tbl_tshirt";
+            }
+
+            $qry_tshirt = mysqli_query($dbc, $sql_tshirt);
+            if(mysqli_affected_rows($dbc)>0)
+            {
+                while($res_tshirt = mysqli_fetch_array($qry_tshirt, MYSQLI_ASSOC))
+                {
+                    ?>
                     <div class="card card-tshirt">
                         <img src="<?php echo substr($res_tshirt['imgf'], 3); ?>" class="search-img" alt="Avatar">
                         <div class="container">
                             <h6><b><?php echo mb_strimwidth($res_tshirt["tshirt_title"], 0, 20, "..."); ?></b></h6> 
                             <span>MUR <s><?php echo $res_tshirt["price"] + 100 ; ?></s> <?php echo $res_tshirt["price"]; ?></span>
-                            <span><a class="btn btn-info tsdetails" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a></span> 
+                            <span>
+                            <a class="btn btn-info" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a>
+                            <a class="btn btn-warning" href="#">Buy Now</a>
+                            </span> 
                         </div>
                     </div>
-                <?php
+                    <?php
+                }
             }
-        }
+            elseif(mysqli_affected_rows($dbc)==0)
+            {
+                if($_GET){
+                    echo   "<div class='jumbotron'>
+                    <h1>No Result found</h1>      
+                    <p>Please, Retry!</p>
+                </div>";
+                }  
+            }
     ?>
 <!--/Get Search values-->
     </div>
+
 <!-- /content -->
    
 <!-- footer include -->
