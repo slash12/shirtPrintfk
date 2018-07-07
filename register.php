@@ -178,7 +178,7 @@ if(isset($_SESSION['uname']))
                 $mail->Body    = "
                 Hello $uname, <br>
                 Please Click on the link below to activate your Account: <br><br>
-                <a href=\"http://localhost:8001/merge220318/tdsmerge220318/emailVerified.php?email=$email&token=$token\">Activate your account</a>
+                <a href=\"http://localhost:1234/shirtprintfk/emailVerified.php?email=$email&token=$token\">Activate your account</a>
             ";
 
                 if ($mail->send()) {
@@ -198,189 +198,301 @@ if(isset($_SESSION['uname']))
 ?>
   <body>
     <?php require('includes/navbar.php'); ?>
-    <div class="container-fluid" id="frm_container">
 
-    <table>
-      <tr>
-        <td><h4>Registration Form </h4></td>
-      </tr>
-    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" id="frmreg">
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home"  aria-selected="true">Register</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Login</a>
+    </li>
+
+  </ul>
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+
+      register goes  here!!!...!!
+
+      <div class="container-fluid" id="frm_container">
+
+      <table>
         <tr>
-          <td>
-      <!--Last Name-->
+          <td><h4>Registration Form </h4></td>
+        </tr>
+      <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" id="frmreg">
 
-          <label for="txtlname">Last Name</label>
-          <input type="text" class="form-control <?php err_check(@$lname_err); ?>" id="txtlname" name="txtlname" placeholder="Last Name..." value="<?php @save_state('txtlname');?>">
-          <?php echo @$lname_err; ?>
+          <tr>
+            <td>
+        <!--Last Name-->
 
-      </td>
-      <td>
-        <!--First Name-->
+            <label for="txtlname">Last Name</label>
+            <input type="text" class="form-control <?php err_check(@$lname_err); ?>" id="txtlname" name="txtlname" placeholder="Last Name..." value="<?php @save_state('txtlname');?>">
+            <?php echo @$lname_err; ?>
 
-          <label for="txtfname">First Name</label>
-          <input type="text" class="form-control <?php err_check(@$fname_err); ?>" id="txtfname" name="txtfname" placeholder="First Name..." value="<?php @save_state('txtfname');?>">
-          <?php echo @$fname_err; ?>
-
-      </td>
-    </tr>
-    <tr>
-
-      <td>
-        <!--Country-->
-
-          <label>Country</label>
-            <select class="form-control <?php err_check(@$country_err); ?>" id="sltcountry" name="sltcountry">
-              <option value="0" selected>Choose a Country</option>
-              <?php
-              $all_country = "SELECT country_id, country_name FROM country;";
-              $country_qry = mysqli_query($dbc, $all_country);
-
-
-              while($row = mysqli_fetch_array($country_qry, MYSQLI_ASSOC))
-              {
-               echo "<option value=\"".$row['country_id']."\">".$row['country_name']."</option>";
-              }
-              ?>
-            </select>
-            <?php echo @$country_err; ?>
-
-      </td>
-      <td>
-      <!--Postal Code-->
-
-          <label for="txtpcode">Postal Code</label>
-          <input type="text" class="form-control <?php err_check(@$pcode_err); ?>" id="txtpcode" name="txtpcode" placeholder="Postal Code..." value="<?php @save_state('txtpcode');?>">
-          <?php echo @$pcode_err; ?>
-
-      </td>
-      <td>
-      <!--Street Address-->
-
-          <label for="txtaddress">Street Address</label>
-          <input type="text" class="form-control <?php err_check(@$address_err); ?>" id="txtaddress" name="txtaddress" placeholder="Street Address..." value="<?php @save_state('txtaddress');?>">
-          <?php echo @$address_err; ?>
-
-      </td>
-    </tr>
-      <!--E-mail-->
-      <script>
-      //Check if email already exist
-      function chckEmail(value)
-      {
-        $.ajax({
-        type:"POST",
-        url:"plugins/checkEmail.php",
-        data:"txtemail="+value,
-        success:function(data)
-        {
-          if(data == "false")
-          {
-            document.getElementById('msg1').innerHTML = "<span class='error'>&#9888; Email Already Existed</span>";
-            document.getElementById("btnregsubmit").disabled = true;
-            document.getElementById('txtemail').style.border="1px solid #FF0000";
-          }
-          if(data == "true")
-          {
-            document.getElementById('msg1').innerHTML = "<span style='color:green;'> &#x2611; Valid E-mail Address</span>";
-            document.getElementById('txtemail').style.border="1px solid green";
-            document.getElementById("btnregsubmit").disabled = false;
-          }
-        }
-      });
-      }
-      </script>
-      <tr>
+        </td>
         <td>
+          <!--First Name-->
 
-          <label for="txtemail">E-mail</label>
-          <input type="email" class="form-control <?php err_check(@$email_err); ?>" id="txtemail" name="txtemail" placeholder="E-mail Address..." value="<?php @save_state('txtemail');?>" onkeyup="chckEmail(this.value)">
-          <?php echo @$email_err; ?>
-          <div id="msg1"></div>
+            <label for="txtfname">First Name</label>
+            <input type="text" class="form-control <?php err_check(@$fname_err); ?>" id="txtfname" name="txtfname" placeholder="First Name..." value="<?php @save_state('txtfname');?>">
+            <?php echo @$fname_err; ?>
 
-      </td>
+        </td>
+      </tr>
+      <tr>
+
+        <td>
+          <!--Country-->
+
+            <label>Country</label>
+              <select class="form-control <?php err_check(@$country_err); ?>" id="sltcountry" name="sltcountry">
+                <option value="0" selected>Choose a Country</option>
+                <?php
+                $all_country = "SELECT country_id, country_name FROM country;";
+                $country_qry = mysqli_query($dbc, $all_country);
 
 
-      <!--Username-->
-      <script>
-      //Check if username already exist
-      function chckUsername(value)
-      {
-        $.ajax({
+                while($row = mysqli_fetch_array($country_qry, MYSQLI_ASSOC))
+                {
+                 echo "<option value=\"".$row['country_id']."\">".$row['country_name']."</option>";
+                }
+                ?>
+              </select>
+              <?php echo @$country_err; ?>
+
+        </td>
+        <td>
+        <!--Postal Code-->
+
+            <label for="txtpcode">Postal Code</label>
+            <input type="text" class="form-control <?php err_check(@$pcode_err); ?>" id="txtpcode" name="txtpcode" placeholder="Postal Code..." value="<?php @save_state('txtpcode');?>">
+            <?php echo @$pcode_err; ?>
+
+        </td>
+        <td>
+        <!--Street Address-->
+
+            <label for="txtaddress">Street Address</label>
+            <input type="text" class="form-control <?php err_check(@$address_err); ?>" id="txtaddress" name="txtaddress" placeholder="Street Address..." value="<?php @save_state('txtaddress');?>">
+            <?php echo @$address_err; ?>
+
+        </td>
+      </tr>
+        <!--E-mail-->
+        <script>
+        //Check if email already exist
+        function chckEmail(value)
+        {
+          $.ajax({
           type:"POST",
-          url:"plugins/checkUsername.php",
-          data:"txtuname="+value,
+          url:"plugins/checkEmail.php",
+          data:"txtemail="+value,
           success:function(data)
           {
             if(data == "false")
             {
-              document.getElementById('msg2').innerHTML = "<span class='error'>&#9888; Username Already Existed</span>";
-              document.getElementById('txtuname').style.border="1px solid #FF0000";
+              document.getElementById('msg1').innerHTML = "<span class='error'>&#9888; Email Already Existed</span>";
               document.getElementById("btnregsubmit").disabled = true;
+              document.getElementById('txtemail').style.border="1px solid #FF0000";
             }
             if(data == "true")
             {
-              document.getElementById('msg2').innerHTML = "<span style='color:green;'>&#x2611; Valid Username</span>";
-              document.getElementById('txtuname').style.border="1px solid green";
+              document.getElementById('msg1').innerHTML = "<span style='color:green;'> &#x2611; Valid E-mail Address</span>";
+              document.getElementById('txtemail').style.border="1px solid green";
               document.getElementById("btnregsubmit").disabled = false;
             }
           }
         });
-      }
-      </script>
+        }
+        </script>
+        <tr>
+          <td>
 
+            <label for="txtemail">E-mail</label>
+            <input type="email" class="form-control <?php err_check(@$email_err); ?>" id="txtemail" name="txtemail" placeholder="E-mail Address..." value="<?php @save_state('txtemail');?>" onkeyup="chckEmail(this.value)">
+            <?php echo @$email_err; ?>
+            <div id="msg1"></div>
+
+        </td>
+
+
+        <!--Username-->
+        <script>
+        //Check if username already exist
+        function chckUsername(value)
+        {
+          $.ajax({
+            type:"POST",
+            url:"plugins/checkUsername.php",
+            data:"txtuname="+value,
+            success:function(data)
+            {
+              if(data == "false")
+              {
+                document.getElementById('msg2').innerHTML = "<span class='error'>&#9888; Username Already Existed</span>";
+                document.getElementById('txtuname').style.border="1px solid #FF0000";
+                document.getElementById("btnregsubmit").disabled = true;
+              }
+              if(data == "true")
+              {
+                document.getElementById('msg2').innerHTML = "<span style='color:green;'>&#x2611; Valid Username</span>";
+                document.getElementById('txtuname').style.border="1px solid green";
+                document.getElementById("btnregsubmit").disabled = false;
+              }
+            }
+          });
+        }
+        </script>
+
+          <td>
+
+            <label for="txtuname">Username</label>
+            <input type="text" class="form-control <?php err_check(@$uname_err); ?>" id="txtuname" name="txtuname" placeholder="Username..." value="<?php @save_state('txtuname');?>" onkeyup="chckUsername(this.value)">
+            <?php echo @$uname_err; ?>
+            <div id="msg2"></div>
+
+          </td>
+        </tr>
+
+        <tr>
+        <!--Password-->
         <td>
 
-          <label for="txtuname">Username</label>
-          <input type="text" class="form-control <?php err_check(@$uname_err); ?>" id="txtuname" name="txtuname" placeholder="Username..." value="<?php @save_state('txtuname');?>" onkeyup="chckUsername(this.value)">
-          <?php echo @$uname_err; ?>
-          <div id="msg2"></div>
+            <label for="txtpassword">Password</label>
+            <input type="password" class="form-control <?php err_check(@$pass_err); ?>" id="txtpassword" name="txtpassword" placeholder="Password..." data-toggle="tooltip" data-placement="top" title="e.g Qwert1234!">
+            <!-- <small class="text-muted">
+              e.g Qwert1234!
+            </small> -->
+            <?php echo @$pass_err; ?>
+
+        </td>
+        <td>
+          <!--Confirm Password-->
+
+            <label for="txtcpassword">Confirm password</label>
+            <input type="password" class="form-control <?php err_check(@$cpass_err); ?>" id="txtcpassword" name="txtcpassword" placeholder="Confirm Password...">
+            <?php echo @$cpass_err; ?>
 
         </td>
       </tr>
 
       <tr>
-      <!--Password-->
-      <td>
-
-          <label for="txtpassword">Password</label>
-          <input type="password" class="form-control <?php err_check(@$pass_err); ?>" id="txtpassword" name="txtpassword" placeholder="Password..." data-toggle="tooltip" data-placement="top" title="e.g Qwert1234!">
-          <!-- <small class="text-muted">
-            e.g Qwert1234!
-          </small> -->
-          <?php echo @$pass_err; ?>
-
+        <td>
+        <!--Submit Button-->
+        <input type="submit" class="btn btn-primary" id="btnregsubmit" name="btnregsubmit" value="Register">
       </td>
-      <td>
-        <!--Confirm Password-->
-
-          <label for="txtcpassword">Confirm password</label>
-          <input type="password" class="form-control <?php err_check(@$cpass_err); ?>" id="txtcpassword" name="txtcpassword" placeholder="Confirm Password...">
-          <?php echo @$cpass_err; ?>
-
+        <script>
+          function clrfrm()
+          {
+            location.reload();
+          }
+        </script>
+        <td>
+        <!--Reset Button-->
+        <input class="btn btn-primary" name="btnregreset" id="btnregreset" type="button" onclick="clrfrm();" value="Reset">
       </td>
     </tr>
 
-    <tr>
-      <td>
-      <!--Submit Button-->
-      <input type="submit" class="btn btn-primary" id="btnregsubmit" name="btnregsubmit" value="Register">
-    </td>
-      <script>
-        function clrfrm()
-        {
-          location.reload();
-        }
-      </script>
-      <td>
-      <!--Reset Button-->
-      <input class="btn btn-primary" name="btnregreset" id="btnregreset" type="button" onclick="clrfrm();" value="Reset">
-    </td>
-  </tr>
+      </form>
+      </table>
+    </div>
 
-    </form>
-    </table>
+
+
+
+
+
+
+    </div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">.a..</div>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </body>
   <?php require('includes/footer.php') ?>
 </html>

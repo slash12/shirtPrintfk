@@ -1,0 +1,59 @@
+/*Color picker*/
+.color-preview {
+        border: 1px solid #CCC;
+        margin: 2px;
+        zoom: 1;
+        vertical-align: top;
+        display: inline-block;
+        cursor: pointer;
+        overflow: hidden;
+        width: 20px;
+        height: 20px;
+      }
+.color
+{
+border:1px solid red;
+height: 500px;
+}
+
+
+/*Drag and drop design*/
+
+#canvas-container {
+position: relative;
+width: 190px;
+height: 300px;
+box-shadow: 0 0 5px 1px transparent;
+margin: 10px auto;
+border: 5px solid transparent;
+bottom: 450px;
+}
+
+
+#canvas-container.over {
+border: 2px dashed cyan;
+
+}
+
+
+
+#images img.img_dragging {
+opacity: 0.4;
+}
+
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+-moz-user-select: none;
+-khtml-user-select: none;
+-webkit-user-select: none;
+user-select: none;
+/* Required to make elements draggable in old WebKit */
+-khtml-user-drag: element;
+-webkit-user-drag: element;
+cursor: move;
+}
+
+.form-control
+{
+  width: 50%;
+}

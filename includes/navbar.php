@@ -129,38 +129,29 @@ function save_state($a)
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navShirtPrint" aria-controls="navShirtPrint" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-    <a class="navbar-brand" href="#">
-      <img id="imglogo" data-toggle="magnify" src="images/shirtprints_logo.png"  class="d-inline-block align-top" />
-    </a>
+
     <div class="collapse navbar-collapse" id="navShirtPrint">
-      <ul class="navbar-nav mr-auto">
+    <a href="index.php">  <img id="imglogo"  src="images/ShirtPrints_logo.png"  class="d-inline-block align-top" /></a>
+    <ul class="navbar-nav mr-auto">
+
         <li class="nav-item">
-          <a class="nav-link" href="#">Brower T-Shirt</a>
+          <a class="nav-link" href="index.php">Browse T-Shirt</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Create T-Shirt</a>
+          <a class="nav-link" href="editor/tshirteditor.php">Create T-Shirt</a>
         </li>
-        <li class="nav-item">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Group<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li class="dropdown-item"><a href="#">Men T-Shirt</a></li>
-              <li class="dropdown-item"><a href="#">Women T-Shirt</a></li>
-              <li class="dropdown-item"><a href="#">Kids T-Shirt</a></li>
-              <li class="dropdown-item"><a href="#">Couples T-Shirt</a></li>
-            </ul>
-          </li>
-        </li>
-        <li class="nav-item">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">Help<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li class="dropdown-item"><a href="#">Contact us</a></li>
-              <li class="dropdown-item"><a href="#">About us</a></li>
-              <li class="dropdown-item"><a href="#">FAQ</a></li>
-            </ul>
-          </li>
-        </li>
+
+        <div class="dropdown">
+    <a class="nav-link"  id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Help  </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+      <a class="dropdown-item" >Contact</a>
+      <a class="dropdown-item" >FAQ</a>
+    </div>
+
+  </div>
+
+
       </ul>
         <ul class="nav navbar-nav navbar-right">
           <?php
@@ -193,7 +184,6 @@ function save_state($a)
     </div>
   </div>
   </nav>
-
   <!-- Forget Password Modal -->
   <div class="modal fade" id="frmfpass" name="frmfpass" tabindex="-1" role="dialog" aria-labelledby="frmfpasstitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
