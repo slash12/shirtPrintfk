@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/bootstrap337.min.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap337.min.css">
     <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="../css/jquery-confirm.min.css">
 
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
@@ -19,6 +20,7 @@
     <script src="../js/bootstrap337.min.js"></script>
     <script src="../js/popper.js"></script>
     <script src="../js/main_admin.js"></script>
+    <script src="../js/jquery-confirm.min.js"></script>
 <!--/Import-->
 </head>
 <body>
@@ -73,6 +75,7 @@
         <table id="mtstbl" class="table nowrap">
         <thead>
             <tr>
+                <th>Model No.</th>
                 <th>Brand</th>
                 <th>Category</th>
                 <th>Design</th>
@@ -97,6 +100,7 @@
             ts.quantity AS Quantity,
             ts.img_front AS imgf,
             ts.img_back AS imgb,
+            ts.model_no AS modno,
             GROUP_CONCAT(DISTINCT tp.pattern) AS Pattern, 
             GROUP_CONCAT(DISTINCT tc.color) As Color,
             GROUP_CONCAT(DISTINCT tf.fabric) As Fabric,
@@ -124,6 +128,7 @@
                 $imgb = $row_msa['imgb'];
                 ?>
                 <tr>
+                <td><?php echo $row_msa['modno'] ?></td>
                 <td><?php echo $row_msa['Brand'];?> </td>
                 <td><?php echo $row_msa['Category'];?> </td>
                 <td><?php echo $row_msa['Design'];?> </td>
@@ -143,7 +148,7 @@
                 <td><?php echo $row_msa['Size'];?> </td>
                 <td><?php echo $row_msa['Price'];?> </td>
                 <td><?php echo $row_msa['Quantity'];?> </td>
-                <td><a href="crudtshirt.php?uptshirt='<?php echo $row_msa['tshirt_id'] ?>'" class="btn btn-info">Modify</a> | 
+                <td><a href="crudtshirt.php?uptshirt='<?php echo $row_msa['tshirt_id'] ?>'" class="btn btn-info">Update</a> | 
                 <a href="manageTshirt.php?deltshirt='<?php echo $row_msa['tshirt_id'] ?>'" class="btn btn-warning">Delete</a></td>
                 </tr>
                 <?php
@@ -155,6 +160,30 @@
         <div class="line"></div> 
 </div>
 </div>
-    
+    <script>
+//on delete, this tigger confirmation box
+    $('.btn-warning').on('click', function (e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        $.confirm({
+            title: 'Confirmation Message',
+            content: 'Are you Sure?',
+            type: 'red',
+            typeAnimated: true,
+            buttons: 
+            {
+                Yes: function () 
+                {
+                    window.location=href
+                },
+                No: function () 
+                {
+                    backgroundDismiss: true
+                }
+            }
+        });
+    });
+//on delete, this tigger confirmation box
+    </script>
 </body>
 </html>

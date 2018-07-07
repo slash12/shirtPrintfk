@@ -15,6 +15,8 @@ error_reporting(E_ALL & ~E_WARNING);
         <link rel="stylesheet" href="../css/bootstrap-select.min.css">
         <link rel="stylesheet" href="../css/file-upload-with-preview.css">
         <link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
+        <link rel="stylesheet" href="../css/jquery-confirm.min.css">
+
         <script type="text/javascript" src="../js/jquery.min.js"></script>
         <script type="text/javascript" src="../js/jquery.form.js"></script>
         <script src="../js/popper-select.js"></script>
@@ -22,10 +24,14 @@ error_reporting(E_ALL & ~E_WARNING);
         <script src="../js/bootstrap-select.min.js"></script>
         <script src="../js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="../js/main_admin.js"></script>
+        <script src="../js/jquery-confirm.min.js"></script>
+        
 <!--/Imports-->
+
     </head>
 <!--functions-->
     <?php
+
     //save state + update state render functions
     function savStatetxt($txtname, $upid, $upval)
     {
@@ -82,7 +88,7 @@ error_reporting(E_ALL & ~E_WARNING);
     function updateasso($tablename, $shirt_id, $sltcc, $columnname, $dbc)
     {
         $del_qry = mysqli_query($dbc, "DELETE FROM $tablename WHERE tshirt_id=".$shirt_id);
-        if(del_qry)
+        if($del_qry)
         {
         foreach ($sltcc as $value)
         {
@@ -113,7 +119,7 @@ error_reporting(E_ALL & ~E_WARNING);
       $tshirt_sel_sql = "SELECT * FROM tbl_tshirt WHERE tshirt_id =".$shirt_id_up;
       $tshirt_sel_qry = mysqli_query($dbc, $tshirt_sel_sql);
       $res_sel = mysqli_fetch_assoc($tshirt_sel_qry);
-      if(tshirt_sel_qry)
+      if($tshirt_sel_qry)
       {
         $shirtid_av = $res_sel['tshirt_id'];
         $shirtprice_av = $res_sel['price'];
@@ -125,13 +131,15 @@ error_reporting(E_ALL & ~E_WARNING);
         $shirtsize_av = $res_sel['size_id'];
         $shirtimgf_av = $res_sel['img_front'];
         $shirtimgb_av = $res_sel['img_back'];
+        $shirtmodno_av = $res_sel['model_no'];
+        $shirttstitle_av = $res_sel['tshirt_title'];
       }
     //Retrieve T-Shirt id,brand,category,design,type,size//
 
     //Retrieve T-Shirt Color
       $tshirt_color_sql = "SELECT * FROM tbl_tshirt_color WHERE tshirt_id =".$shirt_id_up;  
       $tshirt_color_qry = mysqli_query($dbc, $tshirt_color_sql);
-      if(tshirt_color_qry)
+      if($tshirt_color_qry)
       {
         $col_arry = array();
         while($row_col = mysqli_fetch_array($tshirt_color_qry))
@@ -144,7 +152,7 @@ error_reporting(E_ALL & ~E_WARNING);
     //Retrieve T-Shirt Features
       $tshirt_features_sql = "SELECT * FROM tbl_tshirt_features WHERE tshirt_id =".$shirt_id_up;  
       $tshirt_features_qry = mysqli_query($dbc, $tshirt_features_sql);
-      if(tshirt_features_qry)
+      if($tshirt_features_qry)
       {
         $features_arry = array();
         while($row_feat = mysqli_fetch_array($tshirt_features_qry))
@@ -157,7 +165,7 @@ error_reporting(E_ALL & ~E_WARNING);
     //Retrieve T-Shirt Fabric
       $tshirt_fabric_sql = "SELECT * FROM tbl_tshirt_fabric WHERE tshirt_id =".$shirt_id_up;  
       $tshirt_fabric_qry = mysqli_query($dbc, $tshirt_fabric_sql);
-      if(tshirt_fabric_qry)
+      if($tshirt_fabric_qry)
       {
         $fabric_arry = array();
         while($row_fab = mysqli_fetch_array($tshirt_fabric_qry))
@@ -170,7 +178,7 @@ error_reporting(E_ALL & ~E_WARNING);
     //Retrieve T-Shirt Pattern
       $tshirt_pattern_sql = "SELECT * FROM tbl_tshirt_pattern WHERE tshirt_id =".$shirt_id_up;  
       $tshirt_pattern_qry = mysqli_query($dbc, $tshirt_pattern_sql);
-      if(tshirt_pattern_qry)
+      if($tshirt_pattern_qry)
       {
         $patter_arry = array();
         while($row_pat = mysqli_fetch_array($tshirt_pattern_qry))
@@ -366,29 +374,57 @@ error_reporting(E_ALL & ~E_WARNING);
             $qty = mysqli_real_escape_string($dbc, $qty_cc);
           }
 
+          //color validation
           @$color_cc = $_POST["ddcolor"];
-            if(empty($color_cc))
-              {
-                $color_err = "Please select a color";
-              }
-
-            @$features_cc = $_POST['sltfeature'];
-            if(empty($features_cc))
-              {
-                $features_err = "Please select a feature";
-              }
-
-            $fabric_cc = @$_POST['sltfabric'];
-            if(empty($fabric_cc))
-              {
-                $fabric_err = "Please select a fabric";
-              }
-
-            $pattern_cc = @$_POST['sltpat'];
-            if(empty($pattern_cc))
+          if(empty($color_cc))
             {
-              $pattern_err = "Please enter a pattern";
+              $color_err = "Please select a color";
             }
+          
+          //feature validation
+          @$features_cc = $_POST['sltfeature'];
+          if(empty($features_cc))
+            {
+              $features_err = "Please select a feature";
+            }
+          
+          //model no validation
+          @$model_cc = $_POST['txtmodno'];
+          if(empty($model_cc))
+          {
+            $arr_err[] = "Please enter a Model Number";
+            $modno_err = "Please enter a Model Number";
+          }
+          else
+          {
+            $modno = mysqli_real_escape_string($dbc, $model_cc);
+          }
+
+          //tshirt title validation
+          @$tstitle_cc = $_POST['txttstitle'];
+          if(empty($tstitle_cc))
+          {
+            $arr_err[] = "Please enter a T-Shirt Title";
+            $tstitle_err = "Please enter a T-Shirt Title";
+          }
+          else
+          {
+            $tstitle = mysqli_real_escape_string($dbc, $tstitle_cc);
+          }
+
+          //fabric validation
+          $fabric_cc = @$_POST['sltfabric'];
+          if(empty($fabric_cc))
+            {
+              $fabric_err = "Please select a fabric";
+            }
+          
+          //pattern validation
+          $pattern_cc = @$_POST['sltpat'];
+          if(empty($pattern_cc))
+          {
+            $pattern_err = "Please select a pattern";
+          }
 
           if(empty($arr_err))
           {
@@ -398,12 +434,13 @@ error_reporting(E_ALL & ~E_WARNING);
   //Update Tshirt
               if(isset($_GET['uptshirt']))
               {
-                //update tshirt details from tbl_shirt
-                $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty' ";
-
+                  //update tshirt details from tbl_shirt
+                  $sql_update_tshirt = "UPDATE tbl_tshirt SET brand_id = '$brand', category_id='$category', design_id='$design', type_id='$type', price='$price', size_id='$size', quantity='$qty', model_no='$modno', tshirt_title = '$tstitle' ";
+                
                 //check if imgf is changed
                 if(isset($target_file_imgf))
                 {
+                  unlink($shirtimgf_av);
                   $sql_update_tshirt .= " ,img_front='$target_file_imgf'";
                 }
 
@@ -419,7 +456,6 @@ error_reporting(E_ALL & ~E_WARNING);
                 $update_tshirt_qry = mysqli_query($dbc, $sql_update_tshirt);
                 if($update_tshirt_qry)
                 {
-                  unlink($shirtimgf_av);
                   //Update tshirt colors 
                     updateasso("tbl_tshirt_color", $shirt_id_up, $color_cc, "color_id", $dbc);
                   //Update tshirt colors//
@@ -477,7 +513,7 @@ error_reporting(E_ALL & ~E_WARNING);
                     $imgb_pUp = mysqli_query($dbc, "UPDATE tbl_tshirt SET img_back = '$imgupb_path' WHERE tshirt_id=$shirt_id_up");
                   }
                   
-                  echo "<script>alert('done');</script>";
+                  // echo "<script>alert('done');</script>";
                   mysqli_commit($dbc);
                   echo "<script>window.location.href='manageTshirt.php';</script>";
                 }
@@ -491,7 +527,25 @@ error_reporting(E_ALL & ~E_WARNING);
               else
               {
   //Insert new Tshirt
-              $insert_qry= "INSERT INTO `tbl_tshirt` (`brand_id`, `category_id`, `design_id`, `type_id`, `img_front`, `img_back`, `price`, `size_id`, `quantity`) VALUES ('$brand', '$category', '$design', '$type', '$target_file_imgf', '$target_file_imgb', '$price', '$size', '$qty');";
+                //check Model No. Uniqueness
+                $qry_niq = mysqli_query($dbc, "SELECT * FROM tbl_tshirt WHERE model_no = '$modno'");
+                if(mysqli_num_rows($qry_niq)>0)
+                {
+                  echo "<script>   $.confirm({
+                    title: 'Warning',
+                    content: 'The T-Shirt Model already exists, Please Choose another!',
+                    type: 'orange',
+                    typeAnimated: true,
+                    buttons: {
+                        TryAgain:{
+                            text: 'Try again',
+                            btnClass: 'btn-orange',
+                        },
+                    }
+                  });</script>";
+                }
+                else{
+              $insert_qry= "INSERT INTO `tbl_tshirt` (`brand_id`, `category_id`, `design_id`, `type_id`, `img_front`, `img_back`, `price`, `size_id`, `quantity`, `model_no`, `tshirt_title`) VALUES ('$brand', '$category', '$design', '$type', '$target_file_imgf', '$target_file_imgb', '$price', '$size', '$qty','$modno', '$tstitle');";
               $insert_qry_exe = mysqli_query($dbc, $insert_qry);
 
               if($insert_qry_exe)
@@ -591,7 +645,7 @@ error_reporting(E_ALL & ~E_WARNING);
                     $img_update_sql = "UPDATE tbl_tshirt SET img_front='$imgf_path', img_back='$imgb_path' WHERE tshirt_id = '$shirt_id'";
                     $img_update_qry = mysqli_query($dbc, $img_update_sql);
                     
-                      if(img_update_qry)
+                      if($img_update_qry)
                       {
                         echo "<script> $(document).ready(function(){
                           $('#addshirtsuc').modal({show: true});
@@ -606,6 +660,7 @@ error_reporting(E_ALL & ~E_WARNING);
                       }
                 }
               }
+            }
   //Insert new Tshirt//
             }
 
@@ -657,7 +712,7 @@ error_reporting(E_ALL & ~E_WARNING);
           <!--Fabric Field-->
             <!--Fabric-->
             <!-- <div class="col-sm"> -->
-              <label class="mr-sm-2" for="Fabrics">Fabrics</label>
+              <label class="mr-sm-3" for="Fabrics">Fabrics</label>
             </td>
             <td>
               <select class="selectpicker" id="sltfabric" name="sltfabric[]" data-live-search="true" data-size="5" title="Choose fabric/s" data-width="201px"  multiple>
@@ -842,7 +897,9 @@ error_reporting(E_ALL & ~E_WARNING);
             <label for="Price">Price</label>
             </td>
             <td>
-            <input type="type" name="txtprice" id="txtprice" class="form-control" placeholder="Price" value="<?php @savStatetxt(@$_POST['txtprice'], @$shirt_id_up, @$shirtprice_av); ?>">   
+            <div class="col-xs-8">
+              <input type="type" name="txtprice" id="txtprice" class="form-control" placeholder="Price" value="<?php @savStatetxt(@$_POST['txtprice'], @$shirt_id_up, @$shirtprice_av); ?>">   
+            </div>
           <!--/Price Field-->
         </td>
       </tr>
@@ -903,7 +960,9 @@ error_reporting(E_ALL & ~E_WARNING);
             <label for="">Quantity</label>
             </td>
             <td>
-            <input type="text" name="txtqty" id="txtqty" class="form-control" placeholder="Quantity" value="<?php @savStatetxt(@$_POST['txtqty'], @$shirt_id_up, @$shirtqty_av); ?>">
+            <div class="col-xs-8">
+              <input type="text" name="txtqty" id="txtqty" class="form-control" placeholder="Quantity" value="<?php @savStatetxt(@$_POST['txtqty'], @$shirt_id_up, @$shirtqty_av); ?>">
+            </div>
           <!--/Quantity Field-->
         </td>
       </tr>
@@ -923,38 +982,66 @@ error_reporting(E_ALL & ~E_WARNING);
             <label class="mr-sm-2" for="Features">Features</label>
             </td>
             <td>
-            <select class="selectpicker" id="sltfeature" data-width="201px" name="sltfeature[]" data-live-search="true" data-size="5" title="Choose feature/s"  multiple>
-              <?php
-              $sql_feature ="Select * from tbl_feature;";
-              $sql_feature_exe = mysqli_query($dbc,$sql_feature);
-              while ($featurerow =mysqli_fetch_array($sql_feature_exe))
-              {
-                ?>
-                <option value="<?php echo $featurerow['feature_id'];?>" data-tokens="<?php echo $featurerow['feature'];?>" <?php @savStatemul(@$_POST['sltfeature'], @$featurerow['feature_id'], @$shirt_id_up, @$feat_arry); ?>><?php echo $featurerow['feature'];?></option>;
+              <select class="selectpicker" id="sltfeature" data-width="201px" name="sltfeature[]" data-live-search="true" data-size="5" title="Choose feature/s"  multiple>
                 <?php
-              }
-              ?>
-            </select>
+                $sql_feature ="Select * from tbl_feature;";
+                $sql_feature_exe = mysqli_query($dbc,$sql_feature);
+                while ($featurerow =mysqli_fetch_array($sql_feature_exe))
+                {
+                  ?>
+                  <option value="<?php echo $featurerow['feature_id'];?>" data-tokens="<?php echo $featurerow['feature'];?>" <?php @savStatemul(@$_POST['sltfeature'], @$featurerow['feature_id'], @$shirt_id_up, @$feat_arry); ?>><?php echo $featurerow['feature'];?></option>;
+                  <?php
+                }
+                ?>
+              </select>
             <!-- Features modal Trigger Button -->
               <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#featuresmodal"><span class="glyphicon">&#x2b;</span></button>
             <!-- </div> -->
           <!--/Features Field-->
+        </td>
+        <td class="tdcoladjust">
+          <!--Model No Field-->
+            <label class="mr-sm-2" for="modno">Model No.</label>
+            </td>
+            <td>
+            <div class="col-xs-8">
+              <input type="text" name="txtmodno" id="txtmodno" class="form-control" placeholder="Model No." value="<?php @savStatetxt(@$_POST['txtmodno'], @$shirt_id_up, @$shirtmodno_av); ?>">       
+            </div>
+          <!--/Model No Field-->
+        </td>
+        <td class="tdcoladjust">
+          <!--T-Shirt Title Field-->
+            <label class="mr-sm-2" for="txttstitle">Title</label>
+            </td>
+            <td>
+            <div class="col-xs-8">
+              <input type="text" name="txttstitle" id="txttstitle" class="form-control" placeholder="Title" value="<?php @savStatetxt(@$_POST['txttstitle'], @$shirt_id_up, @$shirttstitle_av); ?>">       
+            </div>
+          <!--/Model No Field-->
         </td>
       </tr>
 
       <tr>
   <!--Error Msgs-->
         <td colspan="2"><span class="errfrm"><?php echo @$features_err; ?> </span></td>
+        <td colspan="2"><span class="errfrm"><?php echo @$modno_err; ?> </span></td>
+        <td colspan="2"><span class="errfrm"><?php echo @$tstitle_err; ?> </span></td>
   <!--/Error Msgs-->
-
-        <td class="tdcoladjust">
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+        <td colspan="2">&nbsp;</td>
+        <td colspan="2" class="tdcoladjust">
   <!--Button Field-->
           <!--Submit Button-->
-          <input type="submit" class="btn btn-primary" name="btnsubas" id="btnsubas">
+          <input type="submit" class="btn btn-primary" name="btnsubas" id="btnsubas" value="Save">
+          <input class="btn btn-info" name="btnreset" id="btnreset" type="button" onclick="clrfrm();" value="Reset">
           </td>
           <td class="tdcoladjust">
           <!--Reset Button-->
-          <input class="btn btn-primary" name="btnreset" id="btnreset" type="button" onclick="clrfrm();" value="Reset">
+          
   <!--/Button Field-->
         </td>
       </tr>
@@ -1529,6 +1616,13 @@ error_reporting(E_ALL & ~E_WARNING);
     </div>
   <!-- /New T-Shirt added Modal -->
 <!-- /Modals-->
+
+<?php
+  if(isset($_GET['uptshirt']))
+  {
+    echo "<script> document.getElementById('txtmodno').readOnly = true;</script>";
+  }
+?>
 
 <!-- Image Preview Script-->
     <script src="../js/file-upload-with-preview.js"></script>

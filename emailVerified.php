@@ -22,7 +22,7 @@ function redirect()
             $update_query = mysqli_query($dbc, $sql_update);
             //redirect();
             if ($update_query) {
-                header('Location:index.php');
+                header('Location:emailActivated.php');
             } else {
                 echo mysqli_error($dbc);
             }

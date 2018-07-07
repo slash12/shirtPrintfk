@@ -88,9 +88,10 @@ function save_state($a)
             //Check if it is admin
             if($result['username'] == "tdcops")
             {
-              session_start();
+              // session_start();
               $_SESSION['admin'] = $lguname;
-              header('Location: webadmin/admin_home.php');
+              echo $_SESSION['admin'];
+              header('Location: webadmin/crudtshirt.php');
             }
             else
             {
@@ -107,7 +108,6 @@ function save_state($a)
                 }
               header('Location: index.php');
             }
-
           }
           else
           {

@@ -5,14 +5,24 @@
     </div>
     <ul class="list-unstyled components">
         <li>
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Manage T-shirt</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
+            <a href="#tshirtmenu" data-toggle="collapse" aria-expanded="false">Manage T-shirt</a>
+            <ul class="collapse list-unstyled" id="tshirtmenu">
                 <li><a href="manageTshirt.php">View T-Shirt</a></li>
                 <li><a href="crudtshirt.php">Add T-Shirt</a></li>
             </ul>
         </li>
         <li>
-            <a href="#">Manage Brand</a>
+            <a href="#tshirtattributemenu" data-toggle="collapse" aria-expanded="false">T-shirt Attributes</a>
+            <ul class="collapse list-unstyled" id="tshirtattributemenu">
+                <li><a href="tshirt_addAttributes.php">Attributes</a></li>
+                <li><a href="otsattr.php">Other Attributes</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#usersettingmenu" data-toggle="collapse" aria-expanded="false">User Configurations</a>
+            <ul class="collapse list-unstyled" id="usersettingmenu">
+                <li><a href="crudcountry.php">Country</a></li>
+            </ul>
         </li>
         <li>
             <a href="#">About</a>
@@ -31,6 +41,6 @@
         </li>
     </ul>
     <ul class="list-unstyled CTAs">
-        <li><a href="#" class="lgout">Log Out</a></li>
+        <li><a href="admin_logout.php" class="lgout">Log Out</a></li>
     </ul>
 </nav>
