@@ -171,7 +171,7 @@
                             <h6><b><?php echo mb_strimwidth($res_tshirt["tshirt_title"], 0, 20, "..."); ?></b></h6> 
                             <span>MUR <s><?php echo $res_tshirt["price"] + 100 ; ?></s> <?php echo $res_tshirt["price"]; ?></span>
                             <span>
-                            <a class="btn btn-info" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a>
+                            <a class="btn btn-info" href="viewtshirt.php?ts_id=<?php echo $res_tshirt['tshirt_id']; ?>">Details</a>
                             <a class="btn btn-primary" href="#">Buy Now</a>
                             </span> 
                         </div>
