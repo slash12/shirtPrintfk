@@ -31,8 +31,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-magnify.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
-    
-    
   <!-- /Imports -->
 </head>
 <body>
@@ -174,7 +172,7 @@
                             <span>MUR <s><?php echo $res_tshirt["price"] + 100 ; ?></s> <?php echo $res_tshirt["price"]; ?></span>
                             <span>
                             <a class="btn btn-info" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a>
-                            <a class="btn btn-warning" href="#">Buy Now</a>
+                            <a class="btn btn-primary" href="#">Buy Now</a>
                             </span> 
                         </div>
                     </div>
