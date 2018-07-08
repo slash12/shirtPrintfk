@@ -1,17 +1,5 @@
-<!-- <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"> -->
-<link rel="stylesheet" href="../css/style.css" type="text/css" media="all">
-<link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="../css/bootstrap-magnify.css" type="text/css">
-<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
-<script src="../js/jquery.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/bootstrap-magnify.js"></script>
-<script src="../js/popper.js"></script>
-<script src='../js/scrolljquery.min.js'></script>
-<script src='../js/ScrollToTop.js'></script>
-
 <?php
-session_start();
+// session_start();
 
 function CheckCookieLogin($dbc)
 {
