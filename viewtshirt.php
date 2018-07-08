@@ -19,161 +19,171 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>ShirtPrints | Search</title>
+  <meta charset="UTF-8">
+  <title>ShirtPrints | T-Shirt Details</title>
   <!-- Imports -->
     <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-magnify.css" type="text/css">
     <link rel="stylesheet" href="css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="css/font-awesome-all.css">
+    <link rel="stylesheet" href="css/slick.css">
     <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-magnify.js"></script>
     <script src="js/bootstrap-select.min.js"></script>
+    <script src="js/slick.min.js"></script>
+    <script>
+      $(document).ready(function()
+      {
+          $('.tshirt_carousel').slick(
+          {
+            autoplay: true,
+            arrows:false
+          }
+        );
+      });
+    </script>
   <!-- /Imports -->
-
-  <!-- Temporarily Style -->
-  <style>
-
-.wrapper {
-height: 420px;
-margin-left: 1%;
-margin-top: -1%;
-width: 98%;
-border-radius: 7px 7px 7px 7px;
--webkit-box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
--moz-box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
-box-shadow: 0px 14px 32px 0px rgba(0, 0, 0, 0.15);
-}
-
-.product-img {
-  float: left;
-  height: 420px;
-  width: 327px;
-}
-
-.product-img img {
-  border-radius: 7px 0 0 7px;
-}
-
-.product-info {
-  float: left;
-  height: 420px;
-  width: 73.4%;
-  border-radius: 0 7px 10px 7px;
-  background-color: #ffffff;
-}
-
-.product-text {
-  height: 300px;
-  width: auto;
-}
-
-.product-text h1 {
-  margin: 0 0 0 38px;
-  padding-top: 52px;
-  font-size: 34px;
-  color: #474747;
-}
-
-.product-text h1,
-.product-price-btn p {
-  font-family: 'Bentham', serif;
-}
-
-
-
-.product-text p {
-  height: 125px;
-  margin: 0 0 0 38px;
-  font-family: 'Playfair Display', serif;
-  color: #8d8d8d;
-  line-height: 1.7em;
-  font-size: 15px;
-  font-weight: lighter;
-  overflow: hidden;
-}
-
-.product-price-btn {
-  height: 103px;
-  width: 327px;
-  margin-top: 17px;
-  position: relative;
-}
-
-.product-price-btn p {
-  display: inline-block;
-  position: absolute;
-  top: -13px;
-  height: 50px;
-  font-family: 'Trocchi', serif;
-  margin: 0 0 0 38px;
-  font-size: 28px;
-  font-weight: lighter;
-  color: #474747;
-}
-
-span {
-  display: inline-block;
-  height: 50px;
-  font-family: 'Suranna', serif;
-  font-size: 34px;
-}
-
-.product-price-btn button {
-  float: right;
-  display: inline-block;
-  height: 50px;
-  width: 176px;
-  margin: 0 40px 0 16px;
-  box-sizing: border-box;
-  border: transparent;
-  border-radius: 60px;
-  font-family: 'Raleway', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #ffffff;
-  background-color: #9cebd5;
-  cursor: pointer;
-  outline: none;
-}
-
-.product-price-btn button:hover {
-  background-color: #79b0a1;
-}</style>
-  <!-- /Temporarily Style -->
 </head>
 <body>
 <!-- navbar include -->
   <?php
-  require("includes/navbar.php");
+  require(realpath("includes/navbar.php"));
   ?>
 <!-- /navbar include -->
 
+<!-- Retrieve Data for Card -->
+  <?php 
+    if($_GET)
+    {
+      $tshirt_id = mysqli_escape_string($dbc, trim($_GET["ts_id"]));
+      $sql_tshirt_retrieve ="SELECT 
+                    ts.tshirt_id AS tshirt_id,
+                    ts.price AS Price,
+                    ts.quantity AS Quantity,
+                    ts.img_front AS imgf,
+                    ts.img_back AS imgb,
+                    ts.model_no AS modno,
+                    ts.tshirt_title AS ts_title,
+                    GROUP_CONCAT(DISTINCT tp.pattern) AS Pattern, 
+                    GROUP_CONCAT(DISTINCT tc.color) As Color,
+                    GROUP_CONCAT(DISTINCT tf.fabric) As Fabric,
+                    GROUP_CONCAT(DISTINCT te.feature) As Feature,
+                    (SELECT brand FROM tbl_brand tb WHERE tb.brand_id = ts.brand_id) As Brand,
+                    (SELECT cat_name FROM tbl_category tcat WHERE tcat.cat_id = ts.category_id) As Category,
+                    (SELECT design FROM tbl_design tde WHERE tde.design_id = ts.design_id) As Design,
+                    (SELECT type FROM tbl_type ty WHERE ty.type_id = ts.type_id) As Type,
+                    (SELECT size FROM tbl_size tsi WHERE tsi.size_id = ts.size_id) As Size
+                    FROM tbl_tshirt_pattern tsp, tbl_pattern tp, tbl_tshirt ts, tbl_tshirt_color tsc, tbl_color tc, tbl_fabric tf, tbl_tshirt_fabric tsf, tbl_feature te, tbl_tshirt_features tfe
+                    WHERE ts.tshirt_id = tsp.tshirt_id 
+                    AND tsp.pattern_id = tp.pattern_id
+                    AND ts.tshirt_id = tsc.tshirt_id
+                    AND tsc.color_id = tc.color_id
+                    AND tsf.tshirt_id = ts.tshirt_id
+                    AND tsf.fabric_id = tf.fabric_id
+                    AND tfe.tshirt_id = ts.tshirt_id
+                    AND tfe.feature_id = te.feature_id
+                    AND ts.tshirt_id = '$tshirt_id'
+                    GROUP BY ts.tshirt_id";
+      $qry_tshirt_retrieve = mysqli_query($dbc, $sql_tshirt_retrieve);
+      if($qry_tshirt_retrieve)
+      {
+        $res_retrieve = mysqli_fetch_assoc($qry_tshirt_retrieve);
+      }
+    }
+  ?>
+<!-- /Retrieve Data for Card -->
+
 <!-- content -->
     <div class="container-fluid body-container">
-        <div class="wrapper">
+        <div class="wrapper-card-tshirt">
             <div class="product-img">
-                <img src="http://bit.ly/2tMBBTd" height="420" width="327">
+              <div class="slider tshirt_carousel">
+                <div>
+                  <img src="<?php echo substr($res_retrieve['imgf'], 3); ?>">
+                </div>
+                <div>
+                  <img src="<?php echo substr($res_retrieve['imgb'], 3); ?>">
+                </div>
+              </div>
             </div>
-        <div class="product-info">
-        <div class="product-text">
-            <h1>Harvest Vase</h1>
-            <table class="table">
+          <div class="product-info">
+            <div class="product-text">
+            <!-- Table for Display Title -->
+              <table class="tbl-title">
                 <tr>
-                    <th>Model Number</th>
-                    <td>M160</td>
+                  <td><h1><?php echo $res_retrieve["ts_title"] ?></h1></td>
+                  <td class="td-btnBack-card"><a href="search.php" class="btn btn-secondary">Back</a></td>
                 </tr>
-            </table>
-        </div>
-        <div class="product-price-btn">
-            <p><span>78</span>$</p>
-            <button type="button">buy now</button>
-        </div>
-        </div>
+              </table>
+            <!-- /Table for Display Title -->
+            <!-- Main Tshirt Details -->
+              <table class="table btn-tbl-mainContent">
+                <tr>
+                  <th>Brand</th>
+                  <th>Type</th>
+                  <th>Size</th>
+                  <th>Category</th>
+                </tr>
+                <tr>
+                  <td><?php echo $res_retrieve["Brand"]; ?></td>
+                  <td><?php echo $res_retrieve["Type"]; ?></td>
+                  <td><?php echo $res_retrieve["Size"]; ?></td>
+                  <td><?php echo $res_retrieve["Category"]; ?></td>
+                </tr>
+              </table>
+            <!-- /Main Tshirt Details -->
+            <!-- Tshirt Price -->
+              <table class="table-price">
+                <tr>
+                  <th><span>MUR <?php echo $res_retrieve["Price"].".00"; ?></span></th>
+                  <td class="btn-table-price"><button class="btn btn-primary"><i class="far fa-credit-card"></i> Buy Now</button><button class="btn btn-info btn-add-to-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</button></td>                
+                </tr>
+              </table>
+            <!-- /Tshirt Price -->
+            <!-- Tab for all Tshirt Details -->
+              <div class="tab-container">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link" href="#tshirt_details" role="tab" data-toggle="tab">T-Shirt Details</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#tshirt_rating" role="tab" data-toggle="tab">Ratings</a>
+                  </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane fade in active" id="tshirt_details">
+                    <table class="table">
+                      <tr>
+                        <th>Model Number</th>
+                        <td><?php echo $res_retrieve["modno"]; ?></td>
+                        <th>Feature</th>
+                        <td><?php echo $res_retrieve["Feature"]; ?></td>
+                      </tr>
+                      <tr>
+                        <th>Design</th>
+                        <td><?php echo $res_retrieve["Design"]; ?></td>
+                        <th>Pattern</th>
+                        <td><?php echo $res_retrieve["Pattern"]; ?></td>
+                      </tr>
+                      <tr>
+                        <th>Color</th>
+                        <td><?php echo $res_retrieve["Color"]; ?></td>
+                        <th>Fabric</th>
+                        <td><?php echo $res_retrieve["Fabric"]; ?></td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div role="tabpanel" class="tab-pane fade" id="tshirt_rating">bbb</div>
+                </div>
+              </div>
+            <!-- /Tab for all Tshirt Details -->
+            </div>
+          </div>
         </div>
     </div>
 <!-- /content -->
@@ -183,5 +193,6 @@ span {
     require("includes/footer.php");
     ?>
 <!-- /footer include -->
+
   </body>
   </html>
