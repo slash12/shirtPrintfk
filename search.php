@@ -52,7 +52,7 @@
             <div class="form-group">
                 <select name="slttype" class="selectpicker" id="slttype">
                     <option value="0" selected="true">Choose Type</option>
-                    <?php 
+                    <?php
                         $sql_type = "SELECT * FROM tbl_type;";
                         $qry_type = mysqli_query($dbc, $sql_type);
                         if($qry_type)
@@ -72,7 +72,7 @@
             <div class="form-group">
                 <select name="sltbrand" class="selectpicker" id="sltbrand">
                     <option value="0" selected="true">Choose Brand</option>
-                    <?php 
+                    <?php
                         $sql_brand = "SELECT * FROM tbl_brand;";
                         $qry_brand = mysqli_query($dbc, $sql_brand);
                         if($qry_brand)
@@ -92,7 +92,7 @@
             <div class="form-group">
                 <select name="sltcat" class="selectpicker" id="sltcat">
                     <option value="0" selected="true">Choose Category</option>
-                    <?php 
+                    <?php
                         $sql_cat = "SELECT * FROM tbl_category;";
                         $qry_cat = mysqli_query($dbc, $sql_cat);
                         if($qry_cat)
@@ -110,12 +110,12 @@
         <!-- /Category Combo -->
             <button type="submit" class="btn btn-secondary">Search</button>
             <button type="reset" onclick="window.location='search.php'" class="btn btn-warning">Reset</button>
-        </form> 
+        </form>
         <hr>
-       
+
 <!--Get Search values-->
-    <?php 
-       
+    <?php
+
 
             if($_GET)
             {
@@ -138,20 +138,20 @@
                     $search_param = "%$search%";
                 }
             //Search Value Validation
-            
-                $sql_tshirt = "SELECT 
+
+                $sql_tshirt = "SELECT
                 tshirt_id,
                 price,
                 img_front AS imgf,
                 tshirt_title
-                FROM tbl_tshirt WHERE type_id = '".@$type_param."' 
+                FROM tbl_tshirt WHERE type_id = '".@$type_param."'
                 OR tshirt_title LIKE '".@$search_param."'
                 OR brand_id = '".@$brand_param."'
                 OR category_id = '".@$cat_param."'";
             }
             else
             {
-                $sql_tshirt = "SELECT 
+                $sql_tshirt = "SELECT
                 tshirt_id,
                 price,
                 img_front AS imgf,
@@ -168,12 +168,12 @@
                     <div class="card card-tshirt">
                         <img src="<?php echo substr($res_tshirt['imgf'], 3); ?>" class="search-img" alt="Avatar">
                         <div class="container">
-                            <h6><b><?php echo mb_strimwidth($res_tshirt["tshirt_title"], 0, 20, "..."); ?></b></h6> 
+                            <h6><b><?php echo mb_strimwidth($res_tshirt["tshirt_title"], 0, 20, "..."); ?></b></h6>
                             <span>MUR <s><?php echo $res_tshirt["price"] + 100 ; ?></s> <?php echo $res_tshirt["price"]; ?></span>
                             <span>
                             <a class="btn btn-info" href="viewtshirt.php?id='<?php echo $res_tshirt['tshirt_id']; ?>'">Details</a>
                             <a class="btn btn-primary" href="#">Buy Now</a>
-                            </span> 
+                            </span>
                         </div>
                     </div>
                     <?php
@@ -183,17 +183,17 @@
             {
                 if($_GET){
                     echo   "<div class='jumbotron'>
-                    <h1>No Result found</h1>      
+                    <h1>No Result found</h1>
                     <p>Please, Retry!</p>
                 </div>";
-                }  
+                }
             }
     ?>
 <!--/Get Search values-->
     </div>
 
 <!-- /content -->
-   
+
 <!-- footer include -->
     <?php
     require("includes/footer.php");

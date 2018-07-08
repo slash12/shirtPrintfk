@@ -596,10 +596,6 @@ body
   width: 75%
 }
 
-.form-control
-{
-  display: inline !important;
-}
 /*-----------------------------------------*/
 /* Login Form (includes/navbar.php) */
 .pushleft
@@ -713,7 +709,7 @@ body
   padding-left:1%;
 }
 
-hr 
+hr
 {
   border-top: 1px solid #c6c2c2 !important;
   width:210%;
@@ -737,7 +733,7 @@ hr
 }
 
   /*T-Shirt Card*/
-  .card-tshirt 
+  .card-tshirt
   {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
@@ -746,21 +742,21 @@ hr
     margin-bottom:1%;
   }
 
-  .card-tshirt:hover 
+  .card-tshirt:hover
     {
       box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     }
 
-  .container 
+  .container
     {
       padding: 2px 16px;
     }
-  
+
   .search-img
     {
       width: 66% !important;
       margin-left: 16% !important;
     }
-  
+
   /*T-Shirt Card*/
 /*Search Page*/

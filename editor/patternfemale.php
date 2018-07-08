@@ -13,65 +13,65 @@ require('../includes/dbconnect.php');
 <?php include('../includes/navbar.php'); ?>
 
 <div class="row">
-<div class="col-sm-6" style="background:#ABC;">
-<div class="row" >
-<div class="col-md-6" style="background:#DEF;">
+  <div class="col-sm-6" style="background:#ABC;">
+    <div class="row" >
+      <div class="col-md-6" style="background:#DEF;">
 
-<?php
-$sql = "SELECT * FROM addpattern";
-$qry = mysqli_query($dbc, $sql);
+        <?php
+        $sql = "SELECT * FROM addpattern";
+        $qry = mysqli_query($dbc, $sql);
 
-while($row = mysqli_fetch_array($qry))
-{
-echo " <img style=cursor:pointer;width:90px;height:120px; class=img-polaroid src='".$row['pattern']."'>";
-}
+        while($row = mysqli_fetch_array($qry))
+        {
+          echo " <img style=cursor:pointer;width:90px;height:120px; class=img-polaroid src='".$row['pattern']."'>";
+        }
 
-?>
-<br>
+        ?>
+        <br>
 
-</div>
-<div class="col-md-6" style="background:#CAD;">
+      </div>
+      <div class="col-md-6" style="background:#CAD;">
 
-Size:
-<?php
-//size
-$sql = "SELECT * FROM tbl_size";
-$qry = mysqli_query($dbc, $sql);
+        Size:
+        <?php
+        //size
+        $sql = "SELECT * FROM tbl_size";
+        $qry = mysqli_query($dbc, $sql);
 
-if($qry)
-{
-while ($row = mysqli_fetch_array($qry))
-{
-echo  $row['size'];
-echo " <input type=radio  name=size id=size  value = '".$row['size']."' /> ";
-}
-}
-?>
+        if($qry)
+        {
+          while ($row = mysqli_fetch_array($qry))
+          {
+            echo  $row['size'];
+            echo " <input type=radio  name=size id=size  value = '".$row['size']."' /> ";
+          }
+        }
+        ?>
 
-<center>
-<!--	bin  -->
-<a  href="#" id="delete" style="background-color:transparent;"><img src="images/icons/bin.png" height="50" width="50"></a>
+        <center>
+          <!--	bin  -->
+          <a  href="#" id="delete" style="background-color:transparent;"><img src="images/icons/bin.png" height="50" width="50"></a>
 
-<button type="button" onclick="takeScreenShot();" id="btnsave" name="btnsave"  class="btn btn-danger">Save</button>
-<button  id="btncomplete" name="btncomplete"  class="btn btn-success" >Continue</button>
-<!--	reset canvas  -->
-<a href="#" onClick="window.location.reload();" class="btn btn-warning"> Reset </a>
-</center>
+          <button type="button" onclick="takeScreenShot();" id="btnsave" name="btnsave"  class="btn btn-danger">Save</button>
+          <button  id="btncomplete" name="btncomplete"  class="btn btn-success" >Continue</button>
+          <!--	reset canvas  -->
+          <a href="#" onClick="window.location.reload();" class="btn btn-warning"> Reset </a>
+        </center>
 
-</div>
-</div>
-<div>
-</div>
-</div>
+      </div>
+    </div>
+    <div>
+    </div>
+  </div>
 
-<div class="col-sm-6">
-<!--	EDITOR      -->
-<div id="shirtDiv" class="page" style="width:500px; height: 500px; position: relative;left:25%; background-color: rgb(255, 255, 255);">
-<img id="shirt" src="images/tshirt/female/front.png"width="530" height="550"></img>
-<canvas id="tcanvas"></canvas>
-</div>
+  <div class="col-sm-6">
+    <!--	EDITOR      -->
+    <div id="shirtDiv" class="page" style="width:500px; height: 500px; position: relative;left:25%; background-color: rgb(255, 255, 255);">
+      <img id="shirt" src="images/tshirt/female/front.png"width="530" height="550"></img>
+      <canvas id="tcanvas"></canvas>
+    </div>
 
-</div>
+  </div>
 
 </div>
 <?php include('../includes/footer.php'); ?>

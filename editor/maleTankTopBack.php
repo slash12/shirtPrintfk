@@ -1,4 +1,5 @@
-<?php require('../includes/dbconnect.php'); ?>
+<?php
+require('../includes/dbconnect.php'); ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -15,6 +16,9 @@
 <script src="../js/editorjs/colorpicker.js"></script>
 <script type="text/javascript" src="../js/editorjs/dragndrop.js"></script>
 <script type="text/javascript" src="../js/editorjs/modernizr.min.js"></script>
+<script type="text/javascript" src="../js/ScrollToTop.js"></script>
+<link rel="stylesheet" href="../css/style.css">
+
 <script type="text/javascript">
 function msg()
 {
@@ -117,17 +121,24 @@ padding: 5px;
 </center> -->
 
   <input type="hidden" name="hfcol" id="hfcol"/>
+  <input type="hidden" name="hfcol2" id="hfcol2"/>
+
   <input type="hidden" name="tanktops" id="tanktops" value="Tank Tops"/>
   <input type="hidden" name="tanktops_back" id="tanktops_back" value="Back"/>
   <input type="hidden" name="gender" id="gender" value="Male"/>
 
 
 <?php
+
+if(isset($_SERVER['uname']))
+{
   if(isset($_POST["btncomplete"]))
   {
 
 
     $color = $_POST['hfcol'];
+    $color_name = $_POST['hfcol2'];
+
     $category = $_POST['tanktops'];
     $position = $_POST['tanktops_back'];
     $gender = $_POST['gender'];
@@ -166,7 +177,7 @@ else {
         $filepath ="uploads/".$filename;
         move_uploaded_file($filetmp,$filepath);
       }
-      $sql = "INSERT into addcustomizedtshirt(color, img_path, size, category, position,gender,uploadedimg,fontsize,fontfamily,fontcolor) values ('$color', '$file','$size', '$category','$position','$gender', '$filepath','$fontsize', '$fontfamily', '$fontcolor')";
+      $sql = "INSERT into addcustomizedtshirt(color, img_path, size, category, position,gender,uploadedimg,fontsize,fontfamily,fontcolor,color_name) values ('$color', '$file','$size', '$category','$position','$gender', '$filepath','$fontsize', '$fontfamily', '$fontcolor','$color_name')";
       $qry = mysqli_query($dbc, $sql);
 
       if($qry)
@@ -186,12 +197,19 @@ else {
     }
   }
 }
+}
+else {
+  echo "<p style=color:red;>You must first login </p>";
+
+}
  ?>
 </div>
 </div>
 </div>
 </form>
-<?php include('../includes/footer.php'); ?>
+</div>
+</div>
 
+<?php   include($_SERVER['DOCUMENT_ROOT'].'/shirtprintfk/includes/footer.php'); ?>
 </body>
 </html>
